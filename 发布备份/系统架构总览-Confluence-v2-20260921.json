@@ -1,0 +1,161 @@
+{
+  "id": "173834273",
+  "type": "page",
+  "status": "current",
+  "title": "高云杯电子琴-系统架构总览",
+  "version": {
+    "by": {
+      "type": "known",
+      "username": "sunny",
+      "userKey": "2c91808278e47bf30178e4850dcf0001",
+      "profilePicture": {
+        "path": "/download/attachments/65590/user-avatar",
+        "width": 48,
+        "height": 48,
+        "isDefault": false
+      },
+      "displayName": "Huang Changli",
+      "_links": {
+        "self": "https://www.hsunny.cn/rest/api/user?key=2c91808278e47bf30178e4850dcf0001"
+      },
+      "_expandable": {
+        "status": ""
+      }
+    },
+    "when": "2026-09-19T14:35:14.418Z",
+    "message": "",
+    "number": 2,
+    "minorEdit": false,
+    "hidden": false,
+    "_links": {
+      "self": "https://www.hsunny.cn/rest/experimental/content/173834273/version/2"
+    },
+    "_expandable": {
+      "content": "/rest/api/content/173834273"
+    }
+  },
+  "ancestors": [
+    {
+      "id": "106168322",
+      "type": "page",
+      "status": "current",
+      "title": "电子技术 Home",
+      "extensions": {
+        "position": "none"
+      },
+      "_links": {
+        "webui": "/pages/viewpage.action?pageId=106168322",
+        "edit": "/pages/resumedraft.action?draftId=106168322",
+        "tinyui": "/x/AgBUBg",
+        "self": "https://www.hsunny.cn/rest/api/content/106168322"
+      },
+      "_expandable": {
+        "container": "/rest/api/space/ICT",
+        "metadata": "",
+        "operations": "",
+        "children": "/rest/api/content/106168322/child",
+        "restrictions": "/rest/api/content/106168322/restriction/byOperation",
+        "history": "/rest/api/content/106168322/history",
+        "ancestors": "",
+        "body": "",
+        "version": "",
+        "descendants": "/rest/api/content/106168322/descendant",
+        "space": "/rest/api/space/ICT"
+      }
+    },
+    {
+      "id": "125566978",
+      "type": "page",
+      "status": "current",
+      "title": "大学赛事",
+      "extensions": {
+        "position": "none"
+      },
+      "_links": {
+        "webui": "/pages/viewpage.action?pageId=125566978",
+        "edit": "/pages/resumedraft.action?draftId=125566978",
+        "tinyui": "/x/AgB8Bw",
+        "self": "https://www.hsunny.cn/rest/api/content/125566978"
+      },
+      "_expandable": {
+        "container": "/rest/api/space/ICT",
+        "metadata": "",
+        "operations": "",
+        "children": "/rest/api/content/125566978/child",
+        "restrictions": "/rest/api/content/125566978/restriction/byOperation",
+        "history": "/rest/api/content/125566978/history",
+        "ancestors": "",
+        "body": "",
+        "version": "",
+        "descendants": "/rest/api/content/125566978/descendant",
+        "space": "/rest/api/space/ICT"
+      }
+    },
+    {
+      "id": "173834248",
+      "type": "page",
+      "status": "current",
+      "title": "FPGA创新赛",
+      "extensions": {
+        "position": "none"
+      },
+      "_links": {
+        "webui": "/pages/viewpage.action?pageId=173834248",
+        "edit": "/pages/resumedraft.action?draftId=173834248",
+        "tinyui": "/x/CIBcCg",
+        "self": "https://www.hsunny.cn/rest/api/content/173834248"
+      },
+      "_expandable": {
+        "container": "/rest/api/space/ICT",
+        "metadata": "",
+        "operations": "",
+        "children": "/rest/api/content/173834248/child",
+        "restrictions": "/rest/api/content/173834248/restriction/byOperation",
+        "history": "/rest/api/content/173834248/history",
+        "ancestors": "",
+        "body": "",
+        "version": "",
+        "descendants": "/rest/api/content/173834248/descendant",
+        "space": "/rest/api/space/ICT"
+      }
+    }
+  ],
+  "body": {
+    "storage": {
+      "value": "<h1><ac:structured-macro ac:name=\"toc\" ac:schema-version=\"1\" ac:macro-id=\"8614e45e-f05e-49c5-995f-cf0f92156558\" /></h1><h1>FPGA 音频系统模块总览</h1><p>更新时间：2026-09-19<br />架构图：<code>离线文档/gaoyun-architecture-20260919.jpg</code><br />接口基线：<code>fpga-electronic-piano/code/docs/模块接口规范.md</code> v1.2</p><blockquote><p>本文根据架构图和 <code>fpga-electronic-piano/code/docs</code> 下的项目文档整理。架构图表示目标系统全链路；文中&ldquo;已验证&rdquo;表示已有仿真、综合、布局布线或上板证据，&ldquo;计划中&rdquo;表示已定义但尚未完成正式验收。</p></blockquote><h2>1. 系统总览</h2><p><ac:image ac:align=\"center\" ac:alt=\"高云杯电子琴系统架构框图\" ac:width=\"1200\"><ri:attachment ri:filename=\"gaoyun-architecture-20260919.jpg\" /></ac:image></p><p>系统分为三层：</p><ol><li><strong>上位机与开发工具链</strong>：Python 上位机、Python 参考模型、音频分析工具、仿真与 Gowin EDA。</li><li><strong>FPGA 实时数字处理链</strong>：输入适配、统一演奏事件、事件 FIFO、声部管理、DDS/波表、ADSR、混音与效果器、PCM 和 I2S。</li><li><strong>板级音频输出链</strong>：Tang Mega 60K + NEO Dock、PT8211 DAC、NS4263 功放和扬声器/耳机。</li></ol><p>主数据流：</p><ac:structured-macro ac:name=\"code\" ac:schema-version=\"1\" ac:macro-id=\"701112dc-205b-412e-8359-ba3148b88a96\"><ac:parameter ac:name=\"language\">plain</ac:parameter><ac:plain-text-body><![CDATA[输入适配\n  -> 统一演奏事件\n  -> 事件 FIFO\n  -> 声部管理\n  -> DDS / 波表\n  -> ADSR\n  -> 混音与效果器\n  -> 24 位 PCM\n  -> I2S 发送器\n  -> PT8211 DAC\n  -> NS4263 功放\n  -> 扬声器或耳机\n]]></ac:plain-text-body></ac:structured-macro><h2>2. 上位机与开发工具链</h2><table class=\"wrapped\"><thead><tr><th>模块</th><th>模块定义</th><th>输出成果</th><th>主要接口</th></tr></thead><tbody><tr><td>Python 上位机</td><td>连接 FPGA，显示状态、错误计数和测试日志</td><td>串口状态解析、终端显示、CSV 日志、异常处理</td><td>输入 UART 状态文本；输出状态显示和 CSV</td></tr><tr><td>Python DDS 参考模型</td><td>定义频率、相位、波形和音频数学行为</td><td><code>dds_model.py</code>、FCW 计算、频率测试</td><td>输入音符、频率、采样率、相位；输出 FCW、波形样本和误差</td></tr><tr><td>波表/FCW 生成器</td><td>生成波表、频率控制字和测试向量</td><td>波表文件、FCW 表、<code>manifest.json</code>、测试向量</td><td>输入采样率、深度、位宽；输出 ROM 初始化数据</td></tr><tr><td>音频分析工具</td><td>分析 WAV、频谱、SINAD、THD 和延迟</td><td>WAV、频谱图、音频分析报告</td><td>输入 PCM/WAV；输出频谱、频率、噪声和失真指标</td></tr><tr><td>仿真与 Gowin EDA</td><td>完成 RTL 仿真、综合、布局布线、时序和码流生成</td><td>Testbench、仿真报告、综合报告、PnR 报告、<code>.fs</code> 码流</td><td>输入 RTL、TB、CST、SDC；输出 PASS/FAIL、资源、时序和码流</td></tr><tr><td>上位机串口工具</td><td>读取 FPGA UART 状态通道</td><td>串口解析、状态终端、CSV 记录</td><td>输入 UART 文本行；输出状态字段和错误统计</td></tr></tbody></table><p>最终交付物包括正式码流、源码冻结标签、竞赛报告、演示视频、答辩材料以及操作说明。</p><h2>3. FPGA 实时数字处理链</h2><h3>3.1 时钟、复位与采样节拍</h3><table class=\"wrapped\"><thead><tr><th>项目</th><th>定义</th></tr></thead><tbody><tr><td>模块职责</td><td>产生统一 <code>sys_clk</code>、同步复位和 48 kHz <code>sample_tick</code></td></tr><tr><td>输出成果</td><td>时钟方案、复位同步器、时序约束、时钟分析报告</td></tr><tr><td>输入接口</td><td><code>clk</code>、外部低有效 <code>rst_n</code></td></tr><tr><td>输出接口</td><td><code>sys_clk</code>、<code>sys_rst_n</code>、单周期 <code>sample_tick</code></td></tr><tr><td>规则</td><td>音频算法使用 <code>sample_tick</code> 作为 <code>sys_clk</code> 下的时钟使能，不把它作为独立时钟</td></tr><tr><td>状态</td><td>T019 已完成，已有仿真验证</td></tr></tbody></table><p>固定约束：内部采用单一 <code>sys_clk</code>；外部复位低有效，可异步拉低、同步释放；每个独立时钟域使用本域复位同步器。</p><h3>3.2 输入适配</h3><h4>板载按键适配</h4><table class=\"wrapped\"><thead><tr><th>项目</th><th>定义</th></tr></thead><tbody><tr><td>模块职责</td><td>对异步按键进行同步、去抖，并转换为演奏事件</td></tr><tr><td>输出成果</td><td><code>button_debouncer.sv</code>、<code>button_event_converter.sv</code>、自检 TB</td></tr><tr><td>输入接口</td><td><code>button_n_async</code> 或顶层 <code>key_n[]</code></td></tr><tr><td>输出接口</td><td><code>performance_event_t</code>，配合 <code>event_valid/event_ready</code></td></tr><tr><td>当前状态</td><td>已验证两键链路：<code>AB13</code> 对应 A4，<code>Y12</code> 对应 C5</td></tr></tbody></table><h4>MIDI 输入适配</h4><table class=\"wrapped\"><thead><tr><th>项目</th><th>定义</th></tr></thead><tbody><tr><td>模块职责</td><td>接收 MIDI UART 字节流，解析 Note、Velocity、Pitch Bend 和 Control Change</td></tr><tr><td>输出成果</td><td>UART 接收器、MIDI 解析器、MIDI 到统一事件转换器</td></tr><tr><td>输入接口</td><td>异步串行 MIDI，标准速率 31.25 kbaud</td></tr><tr><td>输出接口</td><td>64 位 <code>performance_event_t</code></td></tr><tr><td>规则</td><td>Note On 且 Velocity 为 0 时转换为 Note Off；连续控制限速并合并</td></tr><tr><td>状态</td><td>方案已选定，但键盘型号、电平和最终接线仍待核实</td></tr></tbody></table><p>5 V 外部信号不得直接连接 3.3 V FPGA GPIO，必须确认电平或增加电平转换。</p><h3>3.3 统一演奏事件</h3><table class=\"wrapped\"><thead><tr><th>项目</th><th>定义</th></tr></thead><tbody><tr><td>模块职责</td><td>将按键、MIDI 或传感器输入统一为音频核心事件</td></tr><tr><td>输出成果</td><td><code>audio_defs_pkg.sv</code> 中的事件类型和构造函数、事件转换模块、测试桩</td></tr><tr><td>输入接口</td><td>输入适配器产生的演奏动作</td></tr><tr><td>输出接口</td><td>64 位 <code>performance_event_t</code></td></tr><tr><td>握手接口</td><td><code>event_valid</code>、<code>event_ready</code>、<code>event_data</code></td></tr><tr><td>状态</td><td>T014 已完成，统一事件包为唯一事件定义来源</td></tr></tbody></table><p>事件结构：</p><ac:structured-macro ac:name=\"code\" ac:schema-version=\"1\" ac:macro-id=\"bced0e61-7a3c-4db8-8f35-7de91874051f\"><ac:parameter ac:name=\"language\">plain</ac:parameter><ac:plain-text-body><![CDATA[typedef struct packed {\n    logic [2:0]  event_type;\n    logic [3:0]  source_id;\n    logic [3:0]  channel;\n    logic [6:0]  note_number;\n    logic [9:0]  velocity;\n    logic [9:0]  expression;\n    logic [7:0]  control_id;\n    logic [11:0] control_value;\n    logic [5:0]  reserved;\n} performance_event_t;\n]]></ac:plain-text-body></ac:structured-macro><p>事件类型包括 Note On、Note Off、Aftertouch、Pitch Bend、Control Change 和 All Notes Off。</p><h3>3.4 事件 FIFO</h3><table class=\"wrapped\"><thead><tr><th>项目</th><th>定义</th></tr></thead><tbody><tr><td>模块职责</td><td>缓存输入事件，隔离输入速率和音频采样处理速率</td></tr><tr><td>输出成果</td><td>深度 32 的事件 FIFO、反压逻辑、溢出计数器</td></tr><tr><td>输入接口</td><td><code>event_valid</code>、<code>event_ready</code>、<code>event_data</code></td></tr><tr><td>输出接口</td><td>送往声部管理器的事件流</td></tr><tr><td>状态接口</td><td>当前水位、最高水位、溢出次数</td></tr><tr><td>规则</td><td>FIFO 满时反压，不允许静默丢弃 Note Off</td></tr></tbody></table><h3>3.5 声部管理</h3><table class=\"wrapped\"><thead><tr><th>项目</th><th>定义</th></tr></thead><tbody><tr><td>模块职责</td><td>将 Note 事件分配给空闲声部，处理重复音、释放和声部抢占</td></tr><tr><td>输出成果</td><td><code>voice_manager</code>、声部分配 Python 模型、随机事件测试</td></tr><tr><td>输入接口</td><td>演奏事件流、<code>sample_tick</code>、复位</td></tr><tr><td>输出接口</td><td><code>voice_note[]</code>、<code>voice_gate[]</code>、<code>active_voice_count</code></td></tr><tr><td>当前策略</td><td>优先使用空闲声部；无空闲时抢占最旧声部；同音重复时重新触发</td></tr><tr><td>目标</td><td>保底 4 复音，后续按资源预算扩展</td></tr><tr><td>状态</td><td>T010 设计中，正式 4 声部尚未完成</td></tr></tbody></table><p>建议接口：</p><ac:structured-macro ac:name=\"code\" ac:schema-version=\"1\" ac:macro-id=\"3d1f16d8-d5c8-43df-b8bd-be41f7b87c1b\"><ac:parameter ac:name=\"language\">plain</ac:parameter><ac:plain-text-body><![CDATA[input  logic        clk;\ninput  logic        rst_n;\ninput  logic [63:0] event_in;\ninput  logic        event_valid;\n\noutput logic [6:0]  voice_note [NUM_VOICES-1:0];\noutput logic        voice_gate [NUM_VOICES-1:0];\noutput logic [3:0]  active_voice_count;\n]]></ac:plain-text-body></ac:structured-macro><h3>3.6 音高查表</h3><table class=\"wrapped\"><thead><tr><th>项目</th><th>定义</th></tr></thead><tbody><tr><td>模块职责</td><td>将 MIDI 音符号转换为 DDS 频率控制字或相位增量</td></tr><tr><td>输出成果</td><td><code>note_pitch.sv</code>、音高查表、音高误差测试</td></tr><tr><td>输入接口</td><td><code>note_number</code>、Pitch Bend 等音高控制量</td></tr><tr><td>输出接口</td><td><code>phase_step</code> / FCW</td></tr><tr><td>约束</td><td>使用明确的定点格式，不使用无说明的浮点运算</td></tr><tr><td>状态</td><td>已有占位实现，正式算法验收仍由 M1 负责</td></tr></tbody></table><h3>3.7 DDS 与波表振荡器</h3><table class=\"wrapped\"><thead><tr><th>项目</th><th>定义</th></tr></thead><tbody><tr><td>模块职责</td><td>通过相位累加器和波表产生逐采样音频波形</td></tr><tr><td>输出成果</td><td><code>simple_voice.sv</code>、DDS 参考模型、正弦波表 ROM、FCW 生成脚本</td></tr><tr><td>输入接口</td><td><code>phase_step</code>、<code>voice_gate</code>、<code>sample_tick</code>、复位</td></tr><tr><td>输出接口</td><td>单声部有符号 PCM 样本</td></tr><tr><td>内部状态</td><td>相位累加器、当前波形采样值</td></tr><tr><td>状态</td><td>单声部占位链路已验证，正式 DDS RTL 对应 T004</td></tr></tbody></table><p>单声部输出峰值固定为 <code>2097152</code>，即 24 位 PCM 满幅的四分之一。</p><h3>3.8 ADSR 包络</h3><table class=\"wrapped\"><thead><tr><th>项目</th><th>定义</th></tr></thead><tbody><tr><td>模块职责</td><td>控制声部 Attack、Decay、Sustain 和 Release</td></tr><tr><td>输出成果</td><td>ADSR Python 参考模型、RTL 包络、边界测试</td></tr><tr><td>输入接口</td><td>Note On、Note Off、Velocity、Expression、<code>sample_tick</code></td></tr><tr><td>输出接口</td><td>声部幅度包络值和门控状态</td></tr><tr><td>目标</td><td>消除 Note On 时从 0 直接跳到满幅造成的咔哒声</td></tr><tr><td>状态</td><td>T009 尚未正式实现</td></tr></tbody></table><p>包络时间常数、曲线和定点表示由 M1 定义；流水线、资源和时序实现由 M2 协助。</p><h3>3.9 混音与饱和限幅</h3><table class=\"wrapped\"><thead><tr><th>项目</th><th>定义</th></tr></thead><tbody><tr><td>模块职责</td><td>对多个声部 PCM 进行宽位累加和饱和限幅</td></tr><tr><td>输出成果</td><td><code>mixer.py</code>、混音 RTL、边界测试向量、<code>clip_count</code></td></tr><tr><td>输入接口</td><td>多路 24 位有符号声部 PCM</td></tr><tr><td>输出接口</td><td>24 位有符号 <code>pcm_left</code>、<code>pcm_right</code></td></tr><tr><td>累加位宽</td><td>至少 32 位</td></tr><tr><td>限幅规则</td><td>超出 <code>[-8388608, 8388607]</code> 时饱和，不允许回绕</td></tr><tr><td>状态</td><td>T023 设计中</td></tr></tbody></table><p>旧版 T023 文档曾提到 26 位中间结果，但最新接口规范 v1.2 明确要求累加器至少 32 位，以 v1.2 为准。</p><h3>3.10 延迟效果器</h3><table class=\"wrapped\"><thead><tr><th>项目</th><th>定义</th></tr></thead><tbody><tr><td>模块职责</td><td>对混音后的 PCM 加入可调延迟、干声、湿声和反馈</td></tr><tr><td>输出成果</td><td>延迟效果器 Python 模型、BSRAM 循环缓冲 RTL、参数测试</td></tr><tr><td>输入接口</td><td>24 位 PCM、<code>delay_time</code>、<code>dry_gain</code>、<code>wet_gain</code>、<code>feedback</code></td></tr><tr><td>输出接口</td><td>处理后的 24 位 PCM</td></tr><tr><td>存储结构</td><td>48 kHz、500 ms 约需 24000 个样本，建议使用 BSRAM</td></tr><tr><td>规则</td><td>反馈小于 1，参数切换平滑，输出饱和</td></tr><tr><td>状态</td><td>T028 计划 W5 实现</td></tr></tbody></table><h3>3.11 PCM 音频接口</h3><table class=\"wrapped\"><thead><tr><th>项目</th><th>固定定义</th></tr></thead><tbody><tr><td>输入来源</td><td>混音器或效果器</td></tr><tr><td>输出信号</td><td><code>pcm_left</code>、<code>pcm_right</code></td></tr><tr><td>数据格式</td><td>24 位有符号二进制补码</td></tr><tr><td>握手</td><td><code>pcm_valid</code>、<code>pcm_ready</code></td></tr><tr><td>采样节拍</td><td>每个 <code>sample_tick</code> 最多交付一组左右声道</td></tr><tr><td>缓存要求</td><td>I2S 串行发送期间不能读取正在变化的算法输出</td></tr></tbody></table><p>接口定义：</p><ac:structured-macro ac:name=\"code\" ac:schema-version=\"1\" ac:macro-id=\"c7efd2eb-928b-4a32-91c3-fd759c8e6a22\"><ac:parameter ac:name=\"language\">plain</ac:parameter><ac:plain-text-body><![CDATA[output logic signed [23:0] pcm_left;\noutput logic signed [23:0] pcm_right;\noutput logic               pcm_valid;\ninput  logic               pcm_ready;\n]]></ac:plain-text-body></ac:structured-macro><h3>3.12 I2S 音频串行发送</h3><table class=\"wrapped\"><thead><tr><th>项目</th><th>固定定义</th></tr></thead><tbody><tr><td>模块职责</td><td>将并行 PCM 转换为 PT8211 所需的串行音频数据</td></tr><tr><td>输出成果</td><td>I2S 发送器、解码 TB、时序约束、上板验证</td></tr><tr><td>输入接口</td><td>24 位 <code>pcm_left/right</code>、<code>pcm_valid/ready</code>、<code>sys_clk</code></td></tr><tr><td>输出接口</td><td><code>i2s_bclk</code>、<code>i2s_lrck</code>、<code>i2s_din</code></td></tr><tr><td>采样率</td><td>48 kHz</td></tr><tr><td>BCLK</td><td>3.072 MHz</td></tr><tr><td>帧结构</td><td>双声道、每声道 32 位、每帧 64 BCLK</td></tr><tr><td>有效数据</td><td>16 位</td></tr><tr><td>数据格式</td><td>LSBJ，16 位数据右对齐，MSB first</td></tr><tr><td>转换</td><td>24 位 PCM 发送前进行舍入和饱和转换为 16 位</td></tr><tr><td>状态</td><td>单声部 I2S 输出链路已完成上板验证</td></tr></tbody></table><p>板级端口：</p><table class=\"wrapped\"><thead><tr><th>FPGA 信号</th><th>FPGA 引脚</th></tr></thead><tbody><tr><td><code>i2s_bclk</code></td><td><code>Y17</code></td></tr><tr><td><code>i2s_lrck</code></td><td><code>AB17</code></td></tr><tr><td><code>i2s_din</code></td><td><code>AA16</code></td></tr><tr><td><code>pa_en</code></td><td><code>AB16</code></td></tr></tbody></table><h3>3.13 UART 状态通道</h3><table class=\"wrapped\"><thead><tr><th>项目</th><th>定义</th></tr></thead><tbody><tr><td>模块职责</td><td>输出系统状态、错误计数和性能信息</td></tr><tr><td>输出成果</td><td>UART TX、状态计数器、固定格式状态行</td></tr><tr><td>输入接口</td><td>各子系统状态信号</td></tr><tr><td>输出接口</td><td><code>uart_tx</code></td></tr><tr><td>状态字段</td><td><code>active_voice_count</code>、<code>clip_count</code>、<code>event_fifo_level</code>、<code>event_fifo_overflow</code>、<code>audio_underrun</code>、<code>max_processing_cycles</code></td></tr><tr><td>责任</td><td>FPGA 侧由 M2 负责；上位机解析由 M3 负责</td></tr><tr><td>状态</td><td>T025 尚未正式完成</td></tr></tbody></table><h3>3.14 复音数自证测试模式</h3><table class=\"wrapped\"><thead><tr><th>项目</th><th>定义</th></tr></thead><tbody><tr><td>模块职责</td><td>产生固定频率、固定声部数的纯正弦，证明实时复音能力</td></tr><tr><td>输出成果</td><td>测试模式 RTL、固定 FCW、参考 PCM、FFT 频谱验证</td></tr><tr><td>输入接口</td><td><code>test_mode_enable</code>，可由硬件开关或 UART 命令控制</td></tr><tr><td>输出接口</td><td>N 路固定频率声部、<code>active_voice_count</code>、<code>clip_count</code></td></tr><tr><td>测试频率</td><td>示例为 200 Hz、400 Hz、600 Hz、800 Hz</td></tr><tr><td>行为</td><td>测试模式屏蔽按键和 MIDI 输入，强制激活 N 个声部</td></tr><tr><td>状态</td><td>T052 已定义，尚未完成正式验收</td></tr></tbody></table><h2>4. 板级音频输出链</h2><table class=\"wrapped\"><thead><tr><th>模块</th><th>模块定义</th><th>输出成果</th><th>接口</th></tr></thead><tbody><tr><td>Tang Mega 60K + NEO Dock</td><td>FPGA 实时处理平台和外设载体</td><td>Gowin 工程、CST、SDC、码流</td><td>50 MHz 时钟、复位、GPIO、I2S、UART</td></tr><tr><td>PT8211 DAC</td><td>将 FPGA I2S 数字音频转换为模拟音频</td><td>I2S 时序验证、DAC 输出测量</td><td><code>BCK</code>、<code>WS/LRCK</code>、<code>DIN</code>、模拟左右声道</td></tr><tr><td>NS4263 功放</td><td>对 DAC 模拟音频进行功率放大</td><td>功放使能时序、音频链路测量</td><td>模拟音频输入、<code>PA_EN</code></td></tr><tr><td>无源扬声器/耳机</td><td>最终声音输出和听感验证</td><td>演示音频、实测数据、视频素材</td><td>功放模拟输出</td></tr></tbody></table><p>音频输出路径：</p><ac:structured-macro ac:name=\"code\" ac:schema-version=\"1\" ac:macro-id=\"b7ded133-0461-469e-8247-e3fde76a55b6\"><ac:parameter ac:name=\"language\">plain</ac:parameter><ac:plain-text-body><![CDATA[FPGA i2s_bclk / i2s_lrck / i2s_din\n  -> PT8211 DAC\n  -> NS4263 功放\n  -> 无源扬声器或耳机\n]]></ac:plain-text-body></ac:structured-macro><p><code>pa_en</code> 为低有效：<code>0</code> 表示打开功放，<code>1</code> 表示关闭功放；上电初始化阶段必须保持为 <code>1</code>，避免爆音。</p><h2>5. 系统级接口总表</h2><table class=\"wrapped\"><thead><tr><th>接口</th><th>宽度/格式</th><th>连接模块</th></tr></thead><tbody><tr><td><code>sys_clk</code></td><td>单系统时钟</td><td>所有 FPGA 模块</td></tr><tr><td><code>rst_n</code> / <code>sys_rst_n</code></td><td>低有效复位</td><td>顶层和各时序模块</td></tr><tr><td><code>sample_tick</code></td><td>48 kHz 单周期使能</td><td>音频核心、ADSR、DDS、混音、效果器</td></tr><tr><td><code>performance_event_t</code></td><td>64 位</td><td>输入适配、事件 FIFO、声部管理</td></tr><tr><td><code>event_valid</code> / <code>event_ready</code></td><td>标准 valid-ready 握手</td><td>输入适配与事件 FIFO</td></tr><tr><td><code>pcm_left/right</code></td><td>24 位有符号 PCM</td><td>音频核心与 I2S 发送器</td></tr><tr><td><code>pcm_valid</code> / <code>pcm_ready</code></td><td>标准 valid-ready 握手</td><td>音频核心与 I2S 发送器</td></tr><tr><td><code>i2s_bclk</code></td><td>3.072 MHz</td><td>FPGA 到 PT8211</td></tr><tr><td><code>i2s_lrck</code></td><td>48 kHz</td><td>FPGA 到 PT8211</td></tr><tr><td><code>i2s_din</code></td><td>16 位有效数据，LSBJ</td><td>FPGA 到 PT8211</td></tr><tr><td><code>pa_en</code></td><td>低有效功放使能</td><td>FPGA 到 NS4263</td></tr><tr><td><code>uart_tx</code></td><td>UART 文本状态流</td><td>FPGA 到上位机</td></tr><tr><td>状态计数器</td><td>多个饱和计数值</td><td>各子模块到 UART 状态通道</td></tr></tbody></table><h2>6. 当前完成边界</h2><h3>已具备或已有验证证据</h3><ul><li>统一事件接口</li><li>时钟、复位和 <code>sample_tick</code></li><li>板载按键去抖</li><li>按键到统一事件转换</li><li>单声部 DDS 占位链路</li><li>PCM 到 I2S 的板级输出链路</li><li>PT8211、NS4263 到耳机的实测发声</li></ul><h3>已定义但尚未完成正式验收</h3><ul><li>MIDI 接收与解析</li><li>ADSR</li><li>正式 4 声部管理</li><li>正式混音器和效果器</li><li>UART 状态通道</li><li>复音数自证测试模式</li><li>第二种音色</li><li>32 声部扩展</li><li>最终交互方案和完整竞赛交付物</li></ul><h2>7. 依据文档</h2><ul><li><code>fpga-electronic-piano/code/docs/模块接口规范.md</code></li><li><code>fpga-electronic-piano/code/docs/项目事实与范围.md</code></li><li><code>fpga-electronic-piano/code/docs/当前状态.md</code></li><li><code>fpga-electronic-piano/code/docs/角色分工.md</code></li><li><code>fpga-electronic-piano/code/docs/交付物与验收里程碑.md</code></li><li><code>fpga-electronic-piano/code/docs/交互与演奏维度方案.md</code></li><li><code>fpga-electronic-piano/code/docs/test/T010_声部管理策略.md</code></li><li><code>fpga-electronic-piano/code/docs/test/T023_混音器与饱和限幅设计.md</code></li><li><code>fpga-electronic-piano/code/docs/test/T028_延迟效果器设计.md</code></li><li><code>fpga-electronic-piano/code/docs/test/T052_复音数自证测试模式设计.md</code></li></ul><h2>原始文档附件</h2><p><ac:link><ri:attachment ri:filename=\"系统模块总览.md\" /><ac:plain-text-link-body><![CDATA[下载原始 Markdown：系统模块总览.md]]></ac:plain-text-link-body></ac:link></p>",
+      "representation": "storage",
+      "_expandable": {
+        "content": "/rest/api/content/173834273"
+      }
+    },
+    "_expandable": {
+      "editor": "",
+      "view": "",
+      "export_view": "",
+      "styled_view": "",
+      "anonymous_export_view": ""
+    }
+  },
+  "extensions": {
+    "position": "none"
+  },
+  "_links": {
+    "webui": "/pages/viewpage.action?pageId=173834273",
+    "edit": "/pages/resumedraft.action?draftId=173834273",
+    "tinyui": "/x/IYBcCg",
+    "collection": "/rest/api/content",
+    "base": "https://www.hsunny.cn",
+    "context": "",
+    "self": "https://www.hsunny.cn/rest/api/content/173834273"
+  },
+  "_expandable": {
+    "container": "/rest/api/space/ICT",
+    "metadata": "",
+    "operations": "",
+    "children": "/rest/api/content/173834273/child",
+    "restrictions": "/rest/api/content/173834273/restriction/byOperation",
+    "history": "/rest/api/content/173834273/history",
+    "descendants": "/rest/api/content/173834273/descendant",
+    "space": "/rest/api/space/ICT"
+  }
+}

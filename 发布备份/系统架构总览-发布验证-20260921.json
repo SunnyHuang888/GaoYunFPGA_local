@@ -1,0 +1,13 @@
+{
+  "page": "https://www.hsunny.cn/pages/viewpage.action?pageId=173834273",
+  "page_version": 3,
+  "tables": 10,
+  "headings": 25,
+  "code_blocks": 3,
+  "attachment_sha256": "32dae9f3974ae0973e221f6b6456f9d4e82f072fcf70ac9947646af479f62ef1",
+  "image_preserved": true,
+  "toc_preserved": true,
+  "parent_verified": true,
+  "basis": "577e159142307ab131bb6c9774db4cb036f070b8",
+  "validation": "L0 document/static only; historical tests not rerun"
+}

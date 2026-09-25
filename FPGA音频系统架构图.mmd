@@ -1,0 +1,51 @@
+%%{init: {"theme":"base","themeVariables":{"fontFamily":"Microsoft YaHei, Noto Sans CJK SC, sans-serif","fontSize":"16px","lineColor":"#64748b","primaryTextColor":"#17324d"},"flowchart":{"htmlLabels":true,"curve":"linear","nodeSpacing":28,"rankSpacing":36,"diagramPadding":16}}}%%
+flowchart LR
+    subgraph PC["电脑：开发与辅助软件"]
+        direction TB
+        HOST["Python 上位机<br/>状态显示、错误统计、日志"]
+        REF["Python 参考模型<br/>生成波表、测试向量、试听音频"]
+        EDA["仿真工具 + Gowin EDA<br/>验证、综合、布局布线、下载"]
+        REF --> EDA
+    end
+
+    subgraph INPUT["输入接口"]
+        direction TB
+        MIDI["MIDI 力度键盘 + 接收电路<br/>硬件方案待定"]
+        KEY["板载按键"]
+    end
+
+    subgraph BOARD["Tang Mega 60K + NEO Dock"]
+        direction LR
+        subgraph FPGA["FPGA：实时数字处理（五级）"]
+            direction LR
+            S1["① 输入适配<br/>按键去抖 / MIDI 解析"]
+            S2["② 统一演奏事件<br/>音符、力度、开关"]
+            S3["③ 合成引擎<br/>声部分配 → DDS 波表 → ADSR<br/>完整多声部待集成"]
+            S4["④ 混音、饱和限幅、效果器<br/>待集成"]
+            S5["⑤ 音频串行发送<br/>24 位 PCM → 16 位 LSBJ"]
+            S1 --> S2 --> S3 --> S4 --> S5
+        end
+        DAC["板载 PT8211 DAC"]
+        AMP["板载 NS4263 功放"]
+        S5 --> DAC --> AMP
+    end
+
+    SPK["无源扬声器"]
+    MIDI -.->|待接入| S1
+    KEY --> S1
+    EDA -.->|配置下载| FPGA
+    FPGA -.->|状态回传 - 正式状态通道待接入| HOST
+    AMP --> SPK
+
+    classDef software fill:#eef2ff,stroke:#818cf8,color:#312e81,stroke-width:1.5px,rx:10,ry:10;
+    classDef input fill:#fff7ed,stroke:#fb923c,color:#7c2d12,stroke-width:1.5px,rx:10,ry:10;
+    classDef processing fill:#e0f2fe,stroke:#38bdf8,color:#0c4a6e,stroke-width:1.5px,rx:10,ry:10;
+    classDef output fill:#ecfdf5,stroke:#34d399,color:#064e3b,stroke-width:1.5px,rx:10,ry:10;
+    class HOST,REF,EDA software;
+    class MIDI,KEY input;
+    class S1,S2,S3,S4,S5 processing;
+    class DAC,AMP,SPK output;
+    style PC fill:#fafaff,stroke:#c7d2fe,stroke-width:1px
+    style INPUT fill:#fffbf5,stroke:#fed7aa,stroke-width:1px
+    style BOARD fill:#f8fafc,stroke:#94a3b8,stroke-width:1.5px
+    style FPGA fill:#f0f9ff,stroke:#7dd3fc,stroke-width:1.5px

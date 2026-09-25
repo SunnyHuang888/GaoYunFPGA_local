@@ -1,0 +1,10 @@
+{
+  "version": 6,
+  "modules": 32,
+  "file_descriptions_unique": 56,
+  "tables": 99,
+  "headings": 57,
+  "attachment_matches": true,
+  "sha256": "54c1ece26b0b5773d18e03cca2000679b77129575762100ac47ab13ed77240a2",
+  "validation": "L0 document/static; historic tests not rerun"
+}

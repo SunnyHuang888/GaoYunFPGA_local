@@ -1,0 +1,536 @@
+<ac:structured-macro ac:name="toc" ac:schema-version="1" />
+<h1>FPGA 音频系统模块总览</h1>
+<p>更新时间：2026-09-21<br />
+仓库：<a href="https://github.com/huangAngel730/fpga-electronic-piano">huangAngel730/fpga-electronic-piano</a><br />
+分析基线：<code>develop</code>，提交 <code>577e159142307ab131bb6c9774db4cb036f070b8</code>（2026-09-21）；本次已执行远端 fetch，确认本地 HEAD 与 origin/develop 一致。<br />
+接口基线：<code>code/docs/模块接口规范.md</code> <strong>v1.2</strong>，决策 D028；最新交互决策 <strong>D030</strong>。</p>
+<blockquote>
+<p>本文区分目标架构、当前源码、既有验证证据和任务验收状态。依据是该提交的代码、约束、任务看板、技术决策和验证记录；历史记录里的 PASS 不是本次重新执行测试的结果。本次为 L0 文档与源码静态核对，未重新运行仿真、综合、布局布线或上板测试。</p>
+</blockquote>
+<h2>1. 系统总览</h2>
+<p>项目目标是在 Tang Mega 60K + NEO Dock 上实现 FPGA 原生实时多音色电子乐器：输入事件驱动硬件合成，电脑用于开发、参考模型和观测，不承担正式演奏时的音频合成。</p>
+<p><ac:image ac:align="center" ac:width="1200" ac:alt="目标架构图，2026-09-19"><ri:attachment ri:filename="gaoyun-architecture-20260919.jpg" /></ac:image></p>
+<blockquote>
+<p>上图为 2026-09-19 的目标架构图，保留用于说明系统分层。图中“完整多声部待集成”“效果器待集成”等内容仍属目标；键盘现已明确为 MIDIPLUS X4 III，具体接收电路和正式输入引脚仍待确认。当前实现与验收边界以下表和正文为准。</p>
+</blockquote>
+<p>系统分为三层：</p>
+<ol>
+<li><strong>上位机与开发工具链</strong>：Python 黄金模型、波表/FCW 生成、音频分析、串口状态工具、RTL 仿真和 Gowin 构建。</li>
+<li><strong>FPGA 实时处理</strong>：输入适配、统一事件、缓存/仲裁、声部管理、DDS、ADSR、混音/效果、PCM 和音频串行输出。</li>
+<li><strong>板级链路</strong>：MIDI 接收电路、Tang Mega 60K、PT8211-S DAC、NS4263 功放与实际音频输出。</li>
+</ol>
+<h3>1.1 当前正式顶层的实际通路</h3>
+<ac:structured-macro ac:name="code"><ac:parameter ac:name="language">plain</ac:parameter><ac:plain-text-body><![CDATA[两颗板载按键（A4 / C5）
+  -> button_debouncer（当前默认 3 ms）
+  -> button_event_converter（本地 FIFO 默认深度 4）
+  -> 64 位 performance_event_t
+  -> simple_voice（单声部占位，内部音高查表 + 256 点正弦表）
+  -> 左右相同的 24 位 PCM
+  -> i2s_tx（舍入/饱和到 16 位，LSBJ）
+  -> PT8211-S -> NS4263 -> 音频输出
+
+SOURCE_MODE=1：固定测试音 -> 同一音频输出通路
+uart_tx：当前正式顶层恒为 1，尚不输出状态行
+]]></ac:plain-text-body></ac:structured-macro>
+<p>源码入口为 <code>code/rtl/board/electronic_piano_top.sv</code>。该顶层未例化 MIDI 输入、正式 4 声部管理、ADSR、混音器、延迟效果器或系统 UART 状态发送器。两颗按键能够选两个音高，不代表两个声部可以同时发声。</p>
+<h3>1.2 目标完整通路</h3>
+<ac:structured-macro ac:name="code"><ac:parameter ac:name="language">plain</ac:parameter><ac:plain-text-body><![CDATA[X4 III DIN MIDI OUT / 板载按键
+  -> 输入适配与本地缓存
+  -> 输入仲裁 + 公共事件 FIFO（规范深度 32）
+  -> 声部管理（保底 4 复音）
+  -> 音高/FCW + DDS/波表
+  -> ADSR 与力度/表情映射
+  -> 宽位混音 + 饱和限幅 + 可选效果
+  -> 24 位 PCM -> 16 位 LSBJ -> DAC/功放
+
+状态计数器 -> UART 状态发送（T025）-> 上位机（T026）
+固定 N 声部纯正弦测试 -> FFT 谱峰、活跃声部数、削波证据（T052）
+]]></ac:plain-text-body></ac:structured-macro>
+<h2>2. 上位机与开发工具链</h2>
+<table>
+<thead>
+<tr>
+<th>模块</th>
+<th>当前文件或成果</th>
+<th>已知边界</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>DDS 黄金模型与生成器</td>
+<td><code>code/model/dds_model.py</code>、<code>wavetable_gen.py</code>、<code>audio_defs.py</code>、<code>generated/manifest.json</code></td>
+<td>T002/T003 看板已完成；正式 DDS RTL T004 尚未验收</td>
+</tr>
+<tr>
+<td>算法参考</td>
+<td><code>adsr.py</code>、<code>voice_manager.py</code>、<code>mixer.py</code>、<code>delay_effect.py</code>、<code>adsr_sweep.py</code>、<code>benchmark.py</code></td>
+<td>已有模型文件，不等同于 RTL 已实现或系统已集成</td>
+</tr>
+<tr>
+<td>音频分析与演示数据</td>
+<td><code>analysis.py</code>、<code>analysis_tool.py</code>、<code>generate_timbre_demo.py</code>、<code>generate_test_mode_reference.py</code></td>
+<td>可生成离线数据；T027/T028/T032/T052 的正式任务仍未完成</td>
+</tr>
+<tr>
+<td>RTL 对照工具</td>
+<td><code>code/model/rtl_verifier.py</code></td>
+<td>V0064 发现失败退出码和削波标志校验问题，不能据其输出宣称 RTL 验收完成</td>
+</tr>
+<tr>
+<td>串口上位机</td>
+<td><code>code/software/uart_status_monitor.py</code>、<code>uart_status_gui.py</code></td>
+<td>T026 进行中；解析、模拟和 CSV 有软件测试证据，真实串口及 FPGA 状态流未验收</td>
+</tr>
+<tr>
+<td>构建与验证</td>
+<td><code>code/scripts/check_repo.ps1</code>、<code>run_t005_sim.ps1</code>、<code>run_t007_sim.ps1</code>、<code>run_t019_sim.ps1</code> 等</td>
+<td>V0065 记录本地门禁 9/9 PASS；本次没有重跑</td>
+</tr>
+</tbody>
+</table>
+<p>现有模型测试在 V0061/V0064 中记录为 <strong>77 passed</strong>。这一结果说明当时模型测试通过，不能证明混音器 RTL 的 L3 逐样本比较已完成。生成物的 LF 换行、manifest 覆盖和 PNG 可复现性仍有返工项。</p>
+<h2>3. FPGA 实时数字处理链</h2>
+<h3>3.1 时钟、复位与采样节拍</h3>
+<table>
+<thead>
+<tr>
+<th>项目</th>
+<th>当前定义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>系统时钟</td>
+<td>板载 50 MHz，<code>sys_clk</code>，周期 20 ns</td>
+</tr>
+<tr>
+<td>实际复位命名</td>
+<td>顶层外部 <code>sys_rst_n</code>，同步器输出 <code>rst_sync_n</code></td>
+</tr>
+<tr>
+<td>复位规则</td>
+<td>低有效，允许异步拉低，在本时钟域同步释放</td>
+</tr>
+<tr>
+<td>采样节拍</td>
+<td>48 kHz <code>sample_tick</code>，单个 <code>sys_clk</code> 周期使能，不是独立时钟</td>
+</tr>
+<tr>
+<td>实现</td>
+<td><code>reset_sync.sv</code>、<code>sample_tick_gen.sv</code>、<code>audio_defs_pkg.sv</code></td>
+</tr>
+<tr>
+<td>证据</td>
+<td>T019 已完成；V0065 记录公共包、复位、节拍三套自检共 70 项 PASS</td>
+</tr>
+</tbody>
+</table>
+<p>接口文档里的建议复位名称与当前顶层名称不同，接线和代码定位以实际端口为准。音频算法、BCLK 生成均工作在系统时钟下，不把普通逻辑生成的节拍作为内部时钟。</p>
+<h3>3.2 输入适配与 X4 III 交互方案</h3>
+<p><strong>板载按键：</strong><code>button_debouncer</code> 和 <code>button_event_converter</code> 已集成；<code>key_n[0]</code>=AB13 对应 A4（69），<code>key_n[1]</code>=Y12 对应 C5（72）。AA13 是复位，不作为琴键。当前默认去抖为 150000 个 50 MHz 周期，即 3 ms；新去抖窗的实物可靠性和端到端延迟尚无新验收结论。</p>
+<p><strong>MIDI 模块：</strong>仓库已有 <code>code/rtl/input/midi_input/midi_input.sv</code> 和 <code>midi_event_parser.sv</code>。前者组合 31.25 kbaud UART 接收与解析器，后者当前只生成 Note On/Off 事件，支持零力度 Note On 转 Note Off，并有本地 FIFO、错误计数和反压接口。其默认本地 FIFO 深度为 8。<strong>文件存在不等于正式顶层已接入；Pitch/Mod/Sustain 到音频效果的完整链路尚未完成。</strong></p>
+<p>依据 D030，已购键盘型号明确为 <strong>MIDIPLUS X4 III</strong>。仓库硬件事实文件记录的官方能力为 49 键力度、Pitch/Mod 触控条、DIN MIDI OUT、SUS 与 EXP；本次未独立重新核验厂商资料或实物。</p>
+<table>
+<thead>
+<tr>
+<th>演奏控制</th>
+<th>最新方案</th>
+<th>待完成验证</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>琴键位置</td>
+<td>选音、触发与和弦</td>
+<td>不能重复计作额外表情维度</td>
+</tr>
+<tr>
+<td>Velocity</td>
+<td>力度动态；三维表情之一</td>
+<td>实际值域、幅度映射与可听效果</td>
+</tr>
+<tr>
+<td>Pitch Bend</td>
+<td>滑音/弯音；三维表情之一</td>
+<td>实际消息、回中和 FCW 调制</td>
+</tr>
+<tr>
+<td>Modulation</td>
+<td>LFO 颤音深度；三维表情之一</td>
+<td>是否为 CC1、值域和可听颤音</td>
+</tr>
+<tr>
+<td>SUS 延音</td>
+<td>钢琴主模式额外表情</td>
+<td>是否为 CC64、踏板极性、延音与松踏无挂音；半踏未确认</td>
+</tr>
+<tr>
+<td>EXP / 弱音踏板</td>
+<td>可选扩展，不是近期满足三维指标的必购物料</td>
+<td>设备支持、实际控制编号和值域</td>
+</tr>
+</tbody>
+</table>
+<p>电子钢琴主模式以琴键和延音为核心，Pitch/Mod 默认关闭，在拓展展示模式启用。D030 已修订 D029 的“力度、延音、弱音”三维规划。T036 仍为待开始，不得把官方能力写成项目实测成果。</p>
+<p>目标接入是 <strong>DIN MIDI OUT → MIDI 电流环接收 → 光耦隔离与 3.3 V 逻辑整形 → FPGA</strong>。接收电路、Bank 电压和正式输入引脚仍须确认；不能将 DIN MIDI 或未知 5 V 信号直接接入 GPIO。</p>
+<h3>3.3 统一演奏事件</h3>
+<p>唯一公共定义在 <code>code/rtl/common/audio_defs_pkg.sv</code>，结构保持 64 位：</p>
+<ac:structured-macro ac:name="code"><ac:parameter ac:name="language">plain</ac:parameter><ac:plain-text-body><![CDATA[typedef struct packed {
+    logic [2:0]  event_type;
+    logic [3:0]  source_id;
+    logic [3:0]  channel;
+    logic [6:0]  note_number;
+    logic [9:0]  velocity;
+    logic [9:0]  expression;
+    logic [7:0]  control_id;
+    logic [11:0] control_value;
+    logic [5:0]  reserved;
+} performance_event_t;
+]]></ac:plain-text-body></ac:structured-macro>
+<ul>
+<li>握手为 <code>event_valid &amp;&amp; event_ready</code>；未完成握手前保持有效数据。</li>
+<li>MIDI 7 位力度扩展为 10 位；零力度 Note On 在输入适配层转换为 Note Off。</li>
+<li>Pitch Bend 公共值为 12 位有符号补码，中心为 0，默认范围为 ±2 半音。</li>
+<li><code>CTRL_PITCH_BEND</code>、<code>CTRL_MODULATION</code> 已定义；Sustain 若需新增编码，仍须走接口变更流程。</li>
+<li>已定义事件类型不代表所有输入解析、算法消费者和顶层路径均已实现。</li>
+</ul>
+<h3>3.4 缓存、仲裁与事件 FIFO</h3>
+<table>
+<thead>
+<tr>
+<th>对象</th>
+<th>当前情况</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>按键适配器本地 FIFO</td>
+<td>已实现，默认深度 4，正式顶层未覆盖这一参数</td>
+</tr>
+<tr>
+<td>MIDI 适配器本地 FIFO</td>
+<td>模块默认深度 8，当前未接入正式顶层</td>
+</tr>
+<tr>
+<td>公共音频事件 FIFO</td>
+<td>规范要求深度 32、反压、水位和溢出计数；当前正式顶层没有这一独立级</td>
+</tr>
+<tr>
+<td>多输入仲裁</td>
+<td>按键与 MIDI 的正式仲裁仍需集成和验收</td>
+</tr>
+</tbody>
+</table>
+<p>本地缓存不能直接当作已经完成公共 FIFO。规范要求不能静默丢失 Note Off；现有本地溢出计数只能提供可观测性，完整异常恢复和挂音测试仍需在正式链路验证。</p>
+<h3>3.5 声部管理</h3>
+<p><code>code/model/voice_manager.py</code> 已有 Python 分配模型，重复音符采用原槽重新触发。正式目标为保底 4 复音；声部释放、重复音、抢占与多源匹配须按统一事件和 ADSR 协同验证。</p>
+<p>当前 <code>simple_voice.sv</code> 只保存一个活动音符，不能作为 4 声部实现。T010 在最新看板中仍为待开始；T033 声部扩展同样尚未验收。</p>
+<h3>3.6 音高、DDS 与波表</h3>
+<table>
+<thead>
+<tr>
+<th>对象</th>
+<th>当前实现与限制</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>音高转换</td>
+<td><code>code/rtl/common/note_pitch.sv</code> 已供占位音源使用，正式算法验收归 T004 相关工作</td>
+</tr>
+<tr>
+<td>单声部</td>
+<td><code>simple_voice.sv</code> 在 <code>sample_tick</code> 下推进相位，采用正弦表，输出左右相同 PCM</td>
+</tr>
+<tr>
+<td>顶层波表</td>
+<td>默认 256 点、16 位，来自 <code>sine_table.svh</code></td>
+</tr>
+<tr>
+<td>Python 波表</td>
+<td>模型侧有 1024 点生成流程；正式 ROM 单一真值来源仍需统一</td>
+</tr>
+<tr>
+<td>幅度工作点</td>
+<td>16 位表峰值 8192，左移 8 位得到单声部 24 位 PCM 峰值 2097152</td>
+</tr>
+</tbody>
+</table>
+<p>现有占位音源未根据 Velocity 实现动态幅度，也没有 ADSR。旧版本有按键瞬间咔哒声记录；后续需用包络与实测验证改善，不能提前宣称消除。</p>
+<h3>3.7 ADSR 包络</h3>
+<p><code>code/model/adsr.py</code>、<code>adsr_sweep.py</code> 已存在；目标是 Attack/Decay/Sustain/Release 的时间、曲线和定点映射，并处理 Note Off 后的释放。正式 ADSR RTL 未接入顶层，T009 尚未验收。模型文件和演示结果不等于硬件包络已生效。</p>
+<h3>3.8 混音与饱和限幅</h3>
+<table>
+<thead>
+<tr>
+<th>项目</th>
+<th>v1.2 / D028 基线</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>声部样本</td>
+<td>24 位有符号 PCM，单声部峰值 2097152</td>
+</tr>
+<tr>
+<td>累加器</td>
+<td>至少 32 位；26/27 位数学下界不能替代正式实现要求</td>
+</tr>
+<tr>
+<td>输出范围</td>
+<td>饱和到 [-8388608, 8388607]，禁止回绕</td>
+</tr>
+<tr>
+<td>正向临界</td>
+<td>4 × 2097152 = 8388608，应输出 8388607 并置削波标志</td>
+</tr>
+<tr>
+<td>Python 模型</td>
+<td><code>mixer.py</code>；V0064 记录上述临界计算正确</td>
+</tr>
+<tr>
+<td>RTL 与任务</td>
+<td>正式混音链路尚未完成，T023/T024 待开始</td>
+</tr>
+</tbody>
+</table>
+<p><code>rtl_verifier.py</code> 的失败退出码与削波标志比对存在 P0 返工项。现有 1000 组参考向量的模型重算通过，不能写为“混音器 RTL 逐样本比较通过”。</p>
+<h3>3.9 延迟效果与音色扩展</h3>
+<p><code>delay_effect.py</code> 与音色演示生成脚本已存在；T027 第二音色、T028 延迟效果器尚未正式验收，顶层没有对应链路。计划采用循环缓冲、干湿混合和受限反馈；48 kHz 下 500 ms 对应 24000 个样本，实际声道数、存储位宽和资源预算需结合实现确定。</p>
+<h3>3.10 PCM 与音频串行输出</h3>
+<table>
+<thead>
+<tr>
+<th>项目</th>
+<th>规范或实际行为</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>PCM</td>
+<td>左右各 24 位有符号补码</td>
+</tr>
+<tr>
+<td>目标握手</td>
+<td><code>pcm_valid/pcm_ready</code>，每个采样周期最多交付一组</td>
+</tr>
+<tr>
+<td>当前骨架</td>
+<td>顶层把 <code>i2s_tx.valid</code> 固定为 1，<code>ready</code> 未用于上游节拍控制；不是完整算法流水线握手</td>
+</tr>
+<tr>
+<td>DAC 格式</td>
+<td>PT8211-S 使用 LSBJ 右对齐，MSB first；不是 Philips 标准 I2S 相位</td>
+</tr>
+<tr>
+<td>帧结构</td>
+<td>48 kHz，双声道，每声道 32 BCLK，每帧 64 BCLK</td>
+</tr>
+<tr>
+<td>BCLK</td>
+<td>3.072 MHz，系统时钟下相位累加产生</td>
+</tr>
+<tr>
+<td>位宽转换</td>
+<td><code>i2s_tx.sv</code> 的 <code>round_saturate()</code> 完成 24 位到 16 位舍入与饱和</td>
+</tr>
+<tr>
+<td>BCLK 步进</td>
+<td><code>I2S_BCLK_PHASE_STEP = 527765581</code>，按 2 × BCLK 翻转率计算</td>
+</tr>
+</tbody>
+</table>
+<p>最新公共包自检已经纠正旧期望值。顶层部分历史注释仍写旧步进 <code>263882791</code>，本文按实际公共包和修正后的自检取值。欠载时保持上一样本及 <code>audio_underrun</code> 统计是正式接口要求，当前系统级欠载计数尚未完成。</p>
+<h3>3.11 UART 状态与诊断工程</h3>
+<table>
+<thead>
+<tr>
+<th>对象</th>
+<th>当前成果</th>
+<th>验证边界</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>正式系统状态通道 T025</td>
+<td>顶层 <code>uart_tx</code> 恒高；系统计数器与状态行尚未实现</td>
+<td>不能宣称可读取正式音频状态</td>
+</tr>
+<tr>
+<td>通用 UART</td>
+<td><code>uart_tx.sv</code>、<code>uart_rx.sv</code> 已有独立模块和诊断用途</td>
+<td>不等于已集成 T025</td>
+</tr>
+<tr>
+<td>RX 诊断 T053</td>
+<td><code>uart_rx_probe.sv</code></td>
+<td>V0058 已用 115200 8N1 激励确认 V14 接收路径，L6；不等于 MIDI 输入验收</td>
+</tr>
+<tr>
+<td>外部回传 T054</td>
+<td><code>uart_echo_probe.sv</code>、<code>echo_fifo.sv</code></td>
+<td>仿真、工具链、下载及报告通道有证据；外部 CH340 字节级闭环仍未完成</td>
+</tr>
+<tr>
+<td>上位机 T026</td>
+<td>模拟数据、状态解析、CLI/GUI、CSV</td>
+<td>V0066：指定解释器后 14 项软件测试 PASS，真实 COM 与 FPGA 状态流未验收</td>
+</tr>
+</tbody>
+</table>
+<p>T025 应按接口基线落实 <code>active_voice_count</code>、<code>clip_count</code>、FIFO 水位/溢出、音频欠载、处理周期等观测信息。上位机当前候选 <code>STAT</code> 协议不能代替 FPGA 侧协议冻结。M3 仍需修复默认 Python 查找、串口依赖、异常测试和 GUI 参数校验。</p>
+<h3>3.12 复音数自证测试模式</h3>
+<p>T052 为正式验收关键项，目前仅有 Python 参考数据，目标 FPGA 测试模式未完成。V0064 记录离线参考数据可见 200/400/600/800 Hz 四个谱峰；这不是四复音硬件已经实现的证据。</p>
+<p>最终需同时交付：固定 N 路纯正弦的实时 RTL 输出、N 个独立 FFT 谱峰、活跃声部和削波等观测、源码证明，以及非预录播放说明。四复音和后续扩展均以实测能力为准。</p>
+<h2>4. 板级硬件与引脚</h2>
+<p>平台为 Tang Mega 60K + NEO Dock，正式顶层注明器件 <code>GW5AT-LV60PG484AC1/I0</code>，IDE 封装 PBG484A、Device Version B。正式音频链为 PT8211-S → NS4263；已有耳机发声记录，具体插座与输出接法按板级事实文件核对。</p>
+<h3>4.1 当前正式工程约束</h3>
+<table>
+<thead>
+<tr>
+<th>信号</th>
+<th>球位</th>
+<th>IO 标准 / 电压</th>
+<th>用途</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>sys_clk</code></td>
+<td>V22</td>
+<td>LVCMOS33 / 3.3 V</td>
+<td>50 MHz 晶振</td>
+</tr>
+<tr>
+<td><code>sys_rst_n</code></td>
+<td>AA13</td>
+<td>LVCMOS15 / 1.5 V</td>
+<td>低有效复位</td>
+</tr>
+<tr>
+<td><code>key_n[0]</code></td>
+<td>AB13</td>
+<td>LVCMOS15 / 1.5 V</td>
+<td>A4 输入</td>
+</tr>
+<tr>
+<td><code>key_n[1]</code></td>
+<td>Y12</td>
+<td>LVCMOS15 / 1.5 V</td>
+<td>C5 输入</td>
+</tr>
+<tr>
+<td><code>i2s_bclk</code></td>
+<td>Y17</td>
+<td>LVCMOS33 / 3.3 V</td>
+<td>DAC BCK</td>
+</tr>
+<tr>
+<td><code>i2s_lrck</code></td>
+<td>AB17</td>
+<td>LVCMOS33 / 3.3 V</td>
+<td>DAC WS</td>
+</tr>
+<tr>
+<td><code>i2s_din</code></td>
+<td>AA16</td>
+<td>LVCMOS33 / 3.3 V</td>
+<td>DAC DIN</td>
+</tr>
+<tr>
+<td><code>pa_en</code></td>
+<td>AB16</td>
+<td>LVCMOS33 / 3.3 V</td>
+<td>低有效功放使能</td>
+</tr>
+<tr>
+<td><code>uart_tx</code></td>
+<td>U15</td>
+<td>LVCMOS33 / 3.3 V</td>
+<td>当前正式顶层为空闲高</td>
+</tr>
+</tbody>
+</table>
+<p><code>pa_en=0</code> 开功放，<code>pa_en=1</code> 关功放；当前由 <code>~rst_sync_n</code> 驱动。复位/按键为 1.5 V 域，不能把所有 GPIO 都当作 3.3 V。DAC 线路输出不能直接驱动无源扬声器。</p>
+<h3>4.2 外部输入诊断边界</h3>
+<ul>
+<li>T053 已实测 V14 为本板 UART RX，按 LVCMOS33 / 3.3 V 配置可接收；但正式 CST 中禁用项尚未解除，不能据诊断结果擅自改正式顶层。</li>
+<li>板载接口可能持续驱动 V14，外部输入诊断采用 R17；它不是已冻结的正式 MIDI 输入引脚。</li>
+<li>T054 诊断约束采用 R17 输入、R18/T18 回传，3.3 V。V0060 更正了连接器资料：R17 对应 J14 第 5 脚或 J9 第 8 脚；地为 J14 第 12 脚或 J9 第 3/4 脚。<strong>J14 第 11 脚是 5 V，不能当地线。</strong>实物方向与通断仍须核对。</li>
+<li>本板 J9/J8 不能套用 Digilent 通用 PMOD 排针定义。上述是诊断工程资料，不代表正式 MIDI 光耦链已经上板。</li>
+</ul>
+<h2>5. 已有验证与当前未完成边界</h2>
+<table>
+<thead>
+<tr>
+<th>范围</th>
+<th>仓库证据</th>
+<th>可以得出的结论</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>固定音与早期两键链路</td>
+<td>V0035/V0038，L6</td>
+<td>对应历史版本已上板发声</td>
+</tr>
+<tr>
+<td>新去抖/事件转换及 3 ms 参数</td>
+<td>V0040/V0046/V0047</td>
+<td>有回归与工具链证据；V0047 记录 Fmax 65.161 MHz、Setup/Hold TNS 0，不能移用早期 L6 声称新版本已实测</td>
+</tr>
+<tr>
+<td>模型与参考向量</td>
+<td>V0061/V0064</td>
+<td>77 项模型测试通过；混音规则和幅度有模型侧复核，验证器仍须返工</td>
+</tr>
+<tr>
+<td>公共包与推送检查</td>
+<td>V0065</td>
+<td>包级 BCLK 自检已纠正；T019 纳入检查；当时门禁 9/9 PASS</td>
+</tr>
+<tr>
+<td>UART 上位机</td>
+<td>V0066</td>
+<td>软件部分通过，T026 继续进行中</td>
+</tr>
+<tr>
+<td>X4 III 路线</td>
+<td>D030/V0068</td>
+<td>资料与方案核对为 L0；MIDI、光耦、可听效果与延迟未实测</td>
+</tr>
+</tbody>
+</table>
+<p><strong>仍未完成正式验收：</strong>T004 正式 DDS、T009 ADSR、T010 四声部、T023/T024 混音、T025 系统状态通道、T027 第二音色、T028 效果、T033 扩展声部、T036 交互实测、T052 硬件复音自证。已有模型或设计文档不改变这些任务在看板中的状态。</p>
+<p><strong>需要优先解决：</strong></p>
+<ol>
+<li>M1 修正 RTL 验证器失败退出码与削波标志比较，统一生成物与幅度口径，再开展可信的逐样本验收。</li>
+<li>完成正式声部管理、ADSR 和混音，建立能同时发声的复音闭环。</li>
+<li>M2 明确 MIDI 输入仲裁和控制编码，M3 完成 X4 III 抓包、光耦接收和输入接线验证。</li>
+<li>完成 T025，与 T026 联调真实状态行和 CSV；同步修复上位机环境与异常路径。</li>
+<li>用同一冻结码流重新上板验证，再测端到端延迟、音质、独立谱峰和长时间稳定性。</li>
+</ol>
+<h2>6. 文档一致性与本次更新说明</h2>
+<p>本次按代码与较新记录处理了以下历史歧义：</p>
+<ul>
+<li>将“公共事件 FIFO 深度 32”与实际适配器本地 FIFO（4/8）分开。</li>
+<li>将“接口规范已定义”与“顶层已接入、实测通过”分开。</li>
+<li>按 D030 更新三维表情规划，不再沿用 D029 的弱音踏板路线。</li>
+<li>按实际源码记录复位端口、PCM 握手占位和 UART 恒高行为。</li>
+<li>不采用当前状态文件中旧周次、旧完成率或看板末尾已被后续 L6 记录覆盖的历史 JTAG 阻塞文字，作为当前验收结论。</li>
+<li>保留 2026-09-19 架构图，但注明其目标属性与后续变更。</li>
+</ul>
+<p>本次只更新本离线总览与 Confluence 展示页，不修改 RTL、接口冻结项或任务验收状态。旧 Markdown 和发布前页面已备份到同目录的 <code>发布备份/</code>。</p>
+<h2>7. 依据与追溯</h2>
+<p>以下路径均相对于 <code>fpga-electronic-piano/</code>，对应本文顶部提交基线：</p>
+<ul>
+<li><code>code/rtl/board/electronic_piano_top.sv</code>：实际顶层实例与信号。</li>
+<li><code>code/rtl/common/audio_defs_pkg.sv</code>、<code>simple_voice.sv</code>、<code>note_pitch.sv</code>：公共定义与占位音源。</li>
+<li><code>code/rtl/input/button_event_converter/button_event_converter.sv</code>、<code>midi_input/midi_input.sv</code>、<code>midi_input/midi_event_parser.sv</code>：输入事件与本地缓存。</li>
+<li><code>code/rtl/audio_out/i2s_tx.sv</code>、<code>code/constraints/electronic_piano.cst</code>：串行格式、位宽转换与正式引脚。</li>
+<li><code>code/docs/模块接口规范.md</code>、<code>技术决策记录.md</code>：v1.2、D028、D030。</li>
+<li><code>code/docs/任务看板.md</code>、<code>当前状态.md</code>、<code>验证记录.md</code>：任务与历史验证，重点 V0038、V0047、V0058～V0068。</li>
+<li><code>code/docs/MIDIPLUS_X4_III_硬件事实.md</code>、<code>交互与演奏维度方案.md</code>、<code>板级硬件事实.md</code>：交互与硬件边界。</li>
+<li><code>code/docs/M1_review_feedback_2026-09-20.md</code>、<code>M3_T026_review_feedback_2026-09-20.md</code>：尚未关闭的复核问题。</li>
+</ul>
+<p><a href="https://github.com/huangAngel730/fpga-electronic-piano/commit/577e159142307ab131bb6c9774db4cb036f070b8">查看本次基线提交</a></p><h2>原始文档附件</h2><p><ac:link><ri:attachment ri:filename="系统模块总览.md" /><ac:plain-text-link-body><![CDATA[下载最新 Markdown：系统模块总览.md]]></ac:plain-text-link-body></ac:link></p>
