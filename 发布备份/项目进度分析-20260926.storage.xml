@@ -1,0 +1,625 @@
+<h1>项目进度分析</h1>
+<blockquote>
+<p>项目：高云杯实时多音色合成电子乐器引擎<br />
+评估日期：2026-09-26<br />
+代码基线：<code>fpga-electronic-piano</code> 仓库 <code>develop</code>，提交 <code>5ad7eb77bff8afa9486c415034a2f6a562cd398f</code>。<br />
+评估依据：本次分析前已刷新 GitHub 远端；依据代码、任务看板、已有验证记录和官方赛题。本报告未重新运行仿真、综合或上板测试。</p>
+</blockquote>
+<p><strong>标记说明：</strong> <span style="color: #de350b;">🔴</span> 高风险／优先处理；<span style="color: #bf5b00;">🟠</span> 中高风险／关键依赖未闭合；<span style="color: #806000;">🟡</span> 待完善／跟踪处理；<span style="color: #006644;">🟢</span> 指定范围内已有验证；🔵 建议或说明。颜色图标同时配文字，便于不同 Markdown 阅读器显示。</p>
+<h2>一、项目进度分析</h2>
+<h3>1.1 总体判断</h3>
+<p><strong><span style="color: #bf5b00;">🟠</span> 按期完成基础要求的风险为中高。项目已打通基础发声链路，但正式四声部合成、ADSR、多维交互与整机实测尚未形成完整闭环。</strong></p>
+<p>当前优势是接口规范、自动测试、构建流程和问题记录比较充分，硬件发声路线已有上板依据。主要缺口是核心合成算法尚未完整落入正式 RTL，工程积累还需要转化为稳定可演奏、可测量、可重复的整机成果。</p>
+<p>不采用“已完成任务数占比”估算整体完成率：文档、脚本与四声部合成等任务的工作量和关键程度差异很大，简单百分比容易掩盖关键路径风险。</p>
+<h3>1.2 分模块进度</h3>
+<table>
+<thead>
+<tr>
+<th>模块</th>
+<th>已有成果</th>
+<th>尚未闭合的内容</th>
+<th>进度判断</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>板级基础与音频输出</td>
+<td>历史版本已实现固定音、按键改变音高，有 V0035/V0038 上板记录</td>
+<td>后续修改后的完整系统需要重新上板验收</td>
+<td><span style="color: #006644;">🟢</span> 历史基础链路已验证；<span style="color: #806000;">🟡</span> 新版需复验</td>
+</tr>
+<tr>
+<td>音频逐帧请求与 PCM 缓冲</td>
+<td>T055/V0071 已通过相关仿真、综合、布局布线和时序检查，码流已生成</td>
+<td>后续 DIAG 集成码流已上板；正式合成核接入、完整音频回归和连续运行仍待完成</td>
+<td><span style="color: #bf5b00;">🟠</span> 已有 L5 和阶段 DIAG L6，完整音频验收未闭合</td>
+</tr>
+<tr>
+<td>DDS、ADSR、声部管理与混音</td>
+<td>Python 参考模型和向量已有积累；现有顶层使用单声部 <code>simple_voice</code></td>
+<td>正式 DDS RTL、ADSR、四声部分配与混音、逐样本比对；T004/T009/T010/T023 尚未完成</td>
+<td><span style="color: #de350b;">🔴</span> 当前核心进度缺口</td>
+</tr>
+<tr>
+<td>输入与演奏事件</td>
+<td>按键与 R17 MIDI 已经公共 FIFO 接入顶层，新增 USB MIDI 监视器及黑白键 CSV</td>
+<td>实体键盘接入、力度及其他表情控制、重复音与松键行为、异常恢复</td>
+<td><span style="color: #bf5b00;">🟠</span> 距离完整演奏仍需集成</td>
+</tr>
+<tr>
+<td>UART 状态与上位机</td>
+<td>旧版 T026 软件侧通过；目录迁移曾回归失败，已有修复代码，需对应新版复核</td>
+<td>已有真实 DIAG；仍缺混音削波真值、完整 STAT 与真实状态 CSV</td>
+<td><span style="color: #bf5b00;">🟠</span> 软件可用，真实设备闭环未完成</td>
+</tr>
+<tr>
+<td>多音色与效果器</td>
+<td>软件模型和设计资料提供起点</td>
+<td>第二音色、硬件效果器及其资源、时序和音质验证</td>
+<td><span style="color: #806000;">🟡</span> 拓展功能尚未兑现</td>
+</tr>
+<tr>
+<td>现场证明与参赛材料</td>
+<td>已有任务规划和部分历史证据</td>
+<td>T052 复音自证、端到端延迟、音质与持续运行证据、报告和视频</td>
+<td><span style="color: #de350b;">🔴</span> 交付证据不足</td>
+</tr>
+</tbody>
+</table>
+<h3>1.3 最新验证的意义与边界</h3>
+<p>截至 2026-09-26，最新集成与复核证据如下。本报告不重跑测试，以下均为仓库既有记录。</p>
+<table>
+<thead>
+<tr>
+<th>证据</th>
+<th>已证实内容</th>
+<th>不能据此宣称</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>V0072 MIDI 集成</td>
+<td>R17 输入、32 项公共 FIFO 与单声部通路 L5</td>
+<td>多维表情或正式四声部已实测</td>
+</tr>
+<tr>
+<td>V0074 DIAG 上板</td>
+<td>真实 U15/COM13 诊断行；Logic 2326/59904、Register 803/60780，Fmax 55.098 MHz @50 MHz，TNS 0</td>
+<td>完整七数值 STAT/CSV、长期稳定和音质已验收</td>
+</tr>
+<tr>
+<td>V0075 构建</td>
+<td>T008 命令行码流流程已核验，看板已完成</td>
+<td>最终合成系统或参赛封板完成</td>
+</tr>
+<tr>
+<td>V0079 M1 复核</td>
+<td>96 项 unittest、独立钢琴包络脚本、固定音参考内部一致性</td>
+<td>无爆音、四声部 RTL 或完整 D031 黄金向量通过</td>
+</tr>
+<tr>
+<td>V0080 预检</td>
+<td>6 项检查器自检通过；当前复音向量最多 3 活跃声部，检查器正确拒绝</td>
+<td>名为 4voice 的向量已经证明四复音</td>
+</tr>
+<tr>
+<td>V0081 可视化</td>
+<td>独立扫描和事件桥 L2 自检通过</td>
+<td>已综合或 HDMI 上板出图</td>
+</tr>
+</tbody>
+</table>
+<p><strong><span style="color: #de350b;">🔴</span> 新的关键问题：</strong> Release 重触发电平 6530→54，声部分配缺多来源身份且过早释放槽位，模型集成脚本存在打印 FAIL 但退出 0 的路径。96 项 unittest 不覆盖独立钢琴包络脚本，固定音 indexed 向量也不覆盖 ADSR、Velocity、双声道与 PCM 代次握手。</p>
+<p><strong><span style="color: #bf5b00;">🟠</span> 时序余量需要继续关注：</strong> 最新 DIAG 集成版本 Fmax 55.098 MHz，相比 50 MHz 目标仍通过，但不能沿用旧版 63.691 MHz 余量估算正式复音。V0077/T024 已开展关键路径预检，正式混音核接入后需重新综合和时序验收。</p>
+<h3>1.4 时间与关键路径</h3>
+<table>
+<thead>
+<tr>
+<th>时间节点</th>
+<th>性质</th>
+<th>当前含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2026-09-26</td>
+<td>本次评估日</td>
+<td>处于 W3，正式单声部和 ADSR 尚未完成，影响后续四声部集成</td>
+</tr>
+<tr>
+<td>2026-10-18</td>
+<td>仓库内部完整基础演示节点</td>
+<td>距评估日 22 天，应留出测试、报告和录制时间</td>
+</tr>
+<tr>
+<td>2026-10-27</td>
+<td>仓库计划冻结节点</td>
+<td>应主要进行缺陷修复和材料完善</td>
+</tr>
+<tr>
+<td>2026-11-03</td>
+<td>仓库原提交安排</td>
+<td>可继续作为提前提交目标</td>
+</tr>
+<tr>
+<td><strong>2026-11-04 18:00</strong></td>
+<td><strong>官方当前作品截止时间</strong></td>
+<td>距评估日约 39 天，官网日期比仓库原记录晚一天</td>
+</tr>
+</tbody>
+</table>
+<p>官方日期见<a href="https://www.gowinsemi.com.cn/university/match2026">高云 2026 赛事页面</a>，核对日期为 2026-09-25。不要把多出的一天用于增加功能。</p>
+<p>当前关键路径：<strong>正式单声部 → ADSR → 多声部分配与混音 → 输入联调 → 上板测量 → 参赛材料</strong>。输入硬件、状态通道和材料准备可以并行，但核心链路的串行依赖无法仅靠增加并行任务消除。</p>
+<h3>1.5 主要完成风险</h3>
+<table>
+<thead>
+<tr>
+<th>风险</th>
+<th>等级</th>
+<th>影响</th>
+<th>降低风险的动作</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>四声部核心尚未完成</td>
+<td><span style="color: #de350b;">🔴</span> 高</td>
+<td>基础要求无法完整验收，后续拓展缺少依托</td>
+<td>优先完成正式单声部、ADSR、声部管理和饱和混音</td>
+</tr>
+<tr>
+<td>正式合成核接入新音频契约</td>
+<td><span style="color: #bf5b00;">🟠</span> 中高</td>
+<td>可能出现样本错位、迟到、掉音、重复帧</td>
+<td>先逐样本验证，再完成新版整机上板和异常测试</td>
+</tr>
+<tr>
+<td>自研交互要求解释未确认</td>
+<td><span style="color: #bf5b00;">🟠</span> 中高</td>
+<td>外购 MIDI 键盘的使用方式可能不足以体现题目要求</td>
+<td>尽快确认认可边界，明确自主设计部分及验证方法</td>
+</tr>
+<tr>
+<td>完整状态与整机实测证据不足</td>
+<td><span style="color: #de350b;">🔴</span> 高</td>
+<td>难以证明稳定性、复音数和性能指标</td>
+<td>保留 DIAG 阶段成果，补齐削波真值后贯通完整 STAT/CSV，持续保存频谱、波形和日志</td>
+</tr>
+<tr>
+<td>同时推进过多拓展功能</td>
+<td><span style="color: #de350b;">🔴</span> 高</td>
+<td>挤占基础集成和验证时间</td>
+<td>四声部闭环前不扩展复杂功能；已有显示模块保持独立预研，不抢基础集成时间</td>
+</tr>
+<tr>
+<td>材料制作集中到最后</td>
+<td><span style="color: #bf5b00;">🟠</span> 中高</td>
+<td>临近截止发现证据缺失，难以补录</td>
+<td>每个可演示版本同步保存素材和测试条件</td>
+</tr>
+</tbody>
+</table>
+<h3>1.6 按 M1/M2/M3 分工评估进度与完成度</h3>
+<p><strong>评估口径：</strong> 按 <code>角色分工.md</code>、D010 分担边界、任务看板和实际验收证据判断岗位交付成熟度，不按提交次数、代码行数或个人通知中的“完成”字样打分。以下是职责范围的交付评估，不是个人投入或能力评价。尚未到计划周次的任务不直接判为延期。</p>
+<h4>1.6.1 任务状态统计</h4>
+<p>统计截至本报告代码基线，取任务看板“按周次排列”主表，每个任务只计一次；跨角色任务单列。T011 已按 D023/D024 撤销交付要求，且看板明确不计工作量，因此排除。</p>
+<table>
+<thead>
+<tr>
+<th>归属</th>
+<th style="text-align: right;">任务总数</th>
+<th style="text-align: right;">已完成</th>
+<th style="text-align: right;">待复核</th>
+<th style="text-align: right;">进行中</th>
+<th style="text-align: right;">待开始</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>M1 独立主责</td>
+<td style="text-align: right;">12</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">9</td>
+</tr>
+<tr>
+<td>M2 独立主责</td>
+<td style="text-align: right;">22</td>
+<td style="text-align: right;">8</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">6</td>
+</tr>
+<tr>
+<td>M3 独立主责</td>
+<td style="text-align: right;">13</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">7</td>
+</tr>
+<tr>
+<td>M1+M2 分担：T004/T009/T010</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">3</td>
+</tr>
+<tr>
+<td>三人共同验收：T039/T045/T046</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">3</td>
+</tr>
+<tr>
+<td><strong>合计（不含 T011）</strong></td>
+<td style="text-align: right;"><strong>53</strong></td>
+<td style="text-align: right;"><strong>12</strong></td>
+<td style="text-align: right;"><strong>5</strong></td>
+<td style="text-align: right;"><strong>8</strong></td>
+<td style="text-align: right;"><strong>28</strong></td>
+</tr>
+</tbody>
+</table>
+<p><strong>🔵 这些数值是看板状态分布，不是工作量完成率。</strong> 例如 T008 已依据 V0075 更新为已完成；T004/T009/T010/T023 的看板仍待开始，而 V0079 已有模型复核并要求返工/澄清；T005 待复核也不表示发送器尚未实现。相反，Python 模型已实现的算法不代表对应 RTL 任务完成。因此，下表以最新证据补充看板状态，不在本报告中代替负责人关闭任务。</p>
+<h4>1.6.2 岗位交付成熟度总览</h4>
+<table>
+<thead>
+<tr>
+<th>角色与当前职责</th>
+<th>已完成或已有明确证据</th>
+<th>尚未完成的核心交付</th>
+<th>完成度判断</th>
+<th>进度风险</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>M1：音频算法、验证与竞赛交付</strong></td>
+<td>T002 DDS 参考模型、T003 波表与 FCW 工具已完成；其他合成模型与向量已有积累</td>
+<td>正式 DDS/ADSR/四声部行为、T023 混音、正式 RTL 逐样本验收、T052 复音自证；后续音色、效果与报告</td>
+<td><strong>模型准备已有成果，核心硬件交付完成度偏低</strong>；尚未证明正式四声部合成核可交付</td>
+<td><span style="color: #de350b;">🔴</span> 高：当前关键路径的重要前置缺口</td>
+</tr>
+<tr>
+<td><strong>M2：FPGA 技术、系统集成与统一复核</strong></td>
+<td>T001/T014/T019/T020 等基础任务完成；历史发声上板；T053 诊断完成；T055/MIDI 已到 L5，DIAG 已有 L6；T008 已完成，模型复核和可视化独立 L2 有实质结果</td>
+<td>正式合成核集成与资源时序处理、完整 STAT/CSV、T054 外部回传剩余验收、正式音频回归与连续运行；最终稳定码流</td>
+<td><strong>基础工程成熟度较高，整机交付仍处于中间阶段</strong>；不能将当前简单发声系统视为最终系统完成</td>
+<td><span style="color: #bf5b00;">🟠</span> 中高：受 M1 核心交付及 M3 实测依赖，同时承担集成与复核负荷</td>
+</tr>
+<tr>
+<td><strong>M3：实体硬件、交互、采集软件与上板验证</strong></td>
+<td>T021 去抖、T022 事件转换已完成；T026 旧版软件复核通过；新增 MIDI GUI 与 USB CSV，迁移修复需新版复核；板级历史证据可复用</td>
+<td>T006 剩余核对、T036 X4 III 实物交互验收、T026 真实串口/CSV、T031 音质与延迟测量；演示与视频材料</td>
+<td><strong>输入与软件准备已有成果，整机实测和参赛交付完成度偏低</strong>；软件通过不等于真实设备验收</td>
+<td><span style="color: #bf5b00;">🟠</span> 中高：外部输入与测量准备需主动推进，部分整机验收依赖 M1/M2</td>
+</tr>
+</tbody>
+</table>
+<h4>1.6.3 M1：从模型到正式硬件是当前重点</h4>
+<ul>
+<li><strong>已有成果：</strong> DDS、波表和 FCW 工具为算法实现提供了明确起点；其他模型与向量可以支撑后续比对，不需要从零设计。</li>
+<li><strong>关键差距：</strong> T004/T009/T010 按 D010 由 M1 与 M2 分担，但算法数学、包络曲线、同音重复与声部抢占策略、定点口径及算法最终验收仍由 M1 负责。当前单声部占位实现不能替代这些交付。</li>
+<li><strong>完成判据：</strong> 正式合成核在冻结接口下产生可比对 PCM，正常、边界、复位和异常用例可自动判定；四声部、混音和削波行为有实际 RTL 证据。</li>
+<li><strong>排期判断：</strong> 当前 W3 的单声部与 ADSR 目标仍未闭合，存在压缩 W4 四声部集成窗口的风险；报告、效果器等后续任务待开始，不全部算作当前延期。</li>
+</ul>
+<p><strong><span style="color: #de350b;">🔴</span> 建议近期交付顺序：正式单声部与 ADSR → 四声部策略和混音 → RTL 黄金向量验收 → T052 自证模式。</strong> 模型或个人完成通知与看板存在差异时，以代码与验收证据逐项核对，不把模型成果升级为硬件完成。</p>
+<p><strong>2026-09-26 更新：</strong> 已合入钢琴 ADSR、DDS/复音向量及验证器修复；旧 rtl_verifier 的退出码与削波检查已有代码修正。V0079/V0080 的新问题仍需修复：包络重触发、多源同音与 Release 槽位、集成脚本失败传播、真实四槽活跃覆盖。正式 RTL 责任不能由 M1 完成通知自动转给 M2，跨岗代做按最新协作规则需用户私发交接确认。</p>
+<h4>1.6.4 M2：基础链路已有证据，后续压力集中在集成与收敛</h4>
+<ul>
+<li><strong>已有成果：</strong> 公共接口、时钟复位、事件测试桩和顶层骨架已有交付；V0071 给出了最新逐帧缓冲与欠载行为的 L5 证据。M2 同时承担 M1/M3 推送复核，其工作不能只用功能任务数衡量。</li>
+<li><strong>关键差距：</strong> 正式多声部核接入后仍需重做资源、时序和端到端验证；T025 已输出真实 DIAG，但尚未提供完整七字段 STAT。T054 虽已有下载、空闲基线等部分 L6 证据，但外部驱动字节级回传尚未验收，该探针缺项不抹去正式 R17 MIDI 的独立集成进展，也不能代替完整 DIN 验收。</li>
+<li><strong>完成判据：</strong> 当前 MIDI/公共 FIFO 已接入；后续正式核、事件路径与音频输出需构成可构建、时序收敛、版本可追踪的完整工程；真实状态可观测，关键异常可定位，新版本经上板验证。</li>
+<li><strong>排期判断：</strong> 基础设施阶段成果较充分；后续需同时分担算法流水线、集成、状态通道与统一复核，应围绕集成节点安排，避免新增管理性工作挤占实现时间。</li>
+</ul>
+<p><strong><span style="color: #bf5b00;">🟠</span> 建议近期交付顺序：配合正式核接入 T055 → 完成必要状态通道 → 四声部资源与时序复验 → 新版整机验证与稳定码流。</strong> 可独立推进的 T025、T054 剩余项和资源预算不能全部等待 M1 完工。</p>
+<p><strong>2026-09-26 更新：</strong> R17 MIDI、公共 FIFO 和 DIAG 状态已进入正式顶层；T008 已完成，T024/T025 进行中。资源预算已加上四活跃声部与混音位宽门槛，可视化只做独立预研。下一步重点由“建立状态输出”转为“取得混音削波真值并形成完整 STAT”，同时接收合格模型/向量和正式核。</p>
+<h4>1.6.5 M3：软件侧已前进，实物交互与测量需要跟上</h4>
+<ul>
+<li><strong>已有成果：</strong> 按键输入和事件转换已集成；T026 旧版经 V0069 软件复核；新增 USB MIDI GUI、后台采集和黑白键 CSV。V0076 曾发现目录迁移回归，84b280e 已修正路径，本次仅静态核对，尚不能沿用旧复核结论。板级资料、既有出声和串口诊断证据可作为实测起点，但共享成果不重复归为个人新增交付。</li>
+<li><strong>关键差距：</strong> X4 III 实体消息、力度及其他演奏控制尚待冻结验收；T026 真实 FPGA 数据依赖 M2 的 T025；多声部频谱、音质及最坏延迟依赖正式集成版本。</li>
+<li><strong>完成判据：</strong> 接线、电平和消息映射明确；双维控制可独立演示；真实输入到实际音频输出可测量，记录与指定代码/码流版本对应。</li>
+<li><strong>排期判断：</strong> 当前整机测量未完成不全部归因于 M3，需区分上游依赖与可独立准备事项。输入消息采集、电平核对、测量触发方案、采集脚本及视频结构可以先行。</li>
+</ul>
+<p><strong><span style="color: #bf5b00;">🟠</span> 建议近期交付顺序：核对并采集实体输入 → 准备新版上板与延迟测量 → 在混音真值齐备后接入真实 STAT/CSV → 完成整机证据和演示素材。</strong> 不等待全部功能完成后才开始搭建测量链路。</p>
+<p><strong>2026-09-26 更新：</strong> 仓库已保存黑白键 USB MIDI CSV，MIDI 软件增加后台采集并调整目录，T036 转为进行中。USB 证据与单键/三个音高反馈不替代 DIN→R17 完整实测或四复音。优先补新版软件默认入口复核、DIN 原始消息与力度/Pitch/Mod 证据；DIAG 当前被 STAT 解析器拒收属于明确边界，不应绕过校验制造完整状态 CSV。</p>
+<h2>二、评奖要点分析</h2>
+<h3>2.1 评估口径</h3>
+<p>本节分析<strong>影响评奖的关键因素、当前差距和改进动作</strong>，不估算获奖概率，不预测奖项等级。下表中的优先级是项目推进建议，不是官方分值或权重。</p>
+<p>官方明确的基础要求包括至少四声部、ADSR 与实时混音、至少两个独立交互维度，以及控制到音频输出延迟不超过 10 ms；核心评分关注同时活跃可闻独立振荡器数量与实际采样率，并要求现场验证。详细条款以<a href="https://www.gowinsemi.com.cn/university/match2026">官方赛题与评分规则</a>为准。</p>
+<h3>2.2 关键点与改进点</h3>
+<table>
+<thead>
+<tr>
+<th>影响评奖的关键点</th>
+<th>性质与重要性</th>
+<th>当前差距</th>
+<th>具体改进点</th>
+<th>建议保留的证明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>基础要求完整实现</td>
+<td><span style="color: #de350b;">🔴</span> 基础门槛</td>
+<td>正式四声部、ADSR、交互和实测尚未闭合</td>
+<td>优先实现四声部独立音高、独立包络和混音；逐项对照基础要求验收</td>
+<td>功能检查表、RTL 测试结果、整机演奏视频</td>
+</tr>
+<tr>
+<td>纯硬件实时生成</td>
+<td><span style="color: #de350b;">🔴</span> 官方明确要求</td>
+<td>已有实时发声原型，但正式多声部通路未完成</td>
+<td>展示从事件到相位、查表、包络、混音、输出的完整 HDL 链路；区分单周期波表与整段录音播放</td>
+<td>RTL 结构说明、输入与输出对应测试、构建版本</td>
+</tr>
+<tr>
+<td>可验证的合成吞吐量</td>
+<td><span style="color: #de350b;">🔴</span> 官方核心评分依据</td>
+<td>当前正式系统尚无多声部实证</td>
+<td>四声部稳定后根据资源、时序和剩余工期扩容；统计真实同时活跃的独立单元</td>
+<td>活跃声部计数、实际采样率、频谱、资源与时序报告</td>
+</tr>
+<tr>
+<td>现场复音自证</td>
+<td><span style="color: #de350b;">🔴</span> 官方现场验证要求</td>
+<td>T052 尚未完成</td>
+<td>实现已知、间隔充分的不同频率纯正弦测试模式，避免谐波与谱峰混淆</td>
+<td>可数的独立谱峰、测试频率清单、对应 RTL 和操作步骤</td>
+</tr>
+<tr>
+<td>自主设计与交互表现</td>
+<td><span style="color: #bf5b00;">🟠</span> 题目要求与作品辨识度</td>
+<td>外购键盘与自研部分的边界需要说明，多维控制未闭环</td>
+<td>确认题意；明确自研采集、映射或控制的具体贡献；演示两个维度可独立调节</td>
+<td>自研设计说明、实物与接线图、双维独立控制演示</td>
+</tr>
+<tr>
+<td>延迟与确定性</td>
+<td><span style="color: #de350b;">🔴</span> 基础性能；更低延迟属于拓展</td>
+<td>缺少完整端到端实测</td>
+<td>覆盖按键处理、事件排队、合成调度与 DAC 输出；测典型及最坏负载，而非仅给一个 RTL 周期数</td>
+<td>统一触发条件的输入/输出波形、延迟分布、负载说明</td>
+</tr>
+<tr>
+<td>稳定性与可演奏性</td>
+<td><span style="color: #bf5b00;">🟠</span> 工程展示关键</td>
+<td>新版长期运行、快速操作和异常恢复未充分验证</td>
+<td>覆盖重复音、快速松键、超出声部数、复位、输入中断；监测欠载、溢出和削波</td>
+<td>连续运行日志、压力测试、错误计数、异常恢复演示</td>
+</tr>
+<tr>
+<td>多音色、表情与效果</td>
+<td><span style="color: #806000;">🟡</span> 官方拓展方向</td>
+<td>正式 RTL 和实机效果未完成</td>
+<td>基础稳定后优先选择可听辨的第二音色或一项可靠效果；让力度等输入产生明确听感变化</td>
+<td>同条件 A/B 音频、控制映射、资源开销和时序结果</td>
+</tr>
+<tr>
+<td>音质与幅度管理</td>
+<td><span style="color: #806000;">🟡</span> 演示质量与技术可信度</td>
+<td>缺少系统化削波、噪声和失真证据</td>
+<td>明确混音余量、舍入、饱和和包络；分离数字算法问题与模拟采集问题</td>
+<td>PCM 对比、频谱、测量条件、削波统计</td>
+</tr>
+<tr>
+<td>报告、视频与答辩</td>
+<td><span style="color: #bf5b00;">🟠</span> 成果表达关键</td>
+<td>初稿与完整素材尚未形成</td>
+<td>用“要求—实现—证据”组织材料；明确团队自主工作与限制，准备现场故障恢复流程</td>
+<td>简明架构图、需求对照表、可复现演示脚本、备份版本</td>
+</tr>
+</tbody>
+</table>
+<h3>2.3 如何把现有优势转化为评奖证据</h3>
+<ul>
+<li><strong>接口和规范优势：</strong> 用一张清晰框图说明事件路径、音频路径与状态回传，标出自主实现的模块和实际数据流。</li>
+<li><strong>自动测试优势：</strong> 选取能证明关键行为的用例，展示正常、边界和异常场景；不以测试数量代替整机结果。</li>
+<li><strong>问题记录优势：</strong> 展示一两个有代表性的工程问题及修复前后证据，例如逐帧欠载处理，体现定位与验证能力。</li>
+<li><strong>参考模型优势：</strong> 建立模型与正式 RTL 的逐样本对应关系，再通过实测完成从算法到硬件的证据链。</li>
+</ul>
+<p><strong><span style="color: #de350b;">🔴</span> 易误判的事项：</strong> 参数写成三十二声部不等于三十二声部可用；一个波表产生多个谐波不等于多个独立振荡器；合成资源空余不等于时序和吞吐量已经满足；模型输出好听不等于 FPGA 上板音质合格。</p>
+<h2>三、项目推进建议</h2>
+<h3>3.1 优先级与范围控制</h3>
+<table>
+<thead>
+<tr>
+<th>优先级</th>
+<th>建议工作</th>
+<th>完成条件</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><span style="color: #de350b;">🔴</span> P0：完成基础闭环</td>
+<td>正式单声部、ADSR、四声部管理、混音、音频契约接入、双维交互</td>
+<td>可重复演奏，满足基础要求，具备对应仿真和实机证据</td>
+</tr>
+<tr>
+<td><span style="color: #de350b;">🔴</span> P0：建立证明能力</td>
+<td>T052 测试模式、延迟测量、真实 UART 状态、报告证据表</td>
+<td>能说明实际声部数、性能、异常计数与版本条件</td>
+</tr>
+<tr>
+<td><span style="color: #bf5b00;">🟠</span> P1：提高稳定性</td>
+<td>长时间运行、快速事件、超额声部、异常恢复和音质优化</td>
+<td>问题可检测、可复现、可恢复，演示过程稳定</td>
+</tr>
+<tr>
+<td><span style="color: #806000;">🟡</span> P2：选择性拓展</td>
+<td>更高复音数、第二音色、表情或一个效果器</td>
+<td>不破坏基础功能，资源与时序通过，现场收益明确</td>
+</tr>
+</tbody>
+</table>
+<p>P0 是推进顺序，不表示每项都是官方独立评分条款。UART 是观测与取证手段，其实现复杂度应服务于验收需要。</p>
+<h3>3.2 建议里程碑</h3>
+<p>以下日期为本报告提出的建议，不替代仓库已有冻结决策或任务授权。</p>
+<table>
+<thead>
+<tr>
+<th>建议节点</th>
+<th>应交付结果</th>
+<th>检查重点</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>9 月底</strong></td>
+<td>完成当前 MIDI/DIAG 码流的音频回归；修正模型问题并推进正式单声部与 ADSR</td>
+<td>逐样本对比、复位与首帧、松键释音、迟到与欠载行为</td>
+</tr>
+<tr>
+<td><strong>10 月 4 日左右</strong></td>
+<td>四声部真实并发，开始复音自证</td>
+<td>重复音、松键、声部抢占、混音饱和、四峰验证</td>
+</tr>
+<tr>
+<td><strong>10 月 11 日前</strong></td>
+<td>双维交互接入，形成稳定的基础演示及测量结果</td>
+<td>端到端延迟、真实状态日志、持续运行；决定拓展范围</td>
+</tr>
+<tr>
+<td><strong>10 月 18 日前</strong></td>
+<td>完整基础演示稳定，报告与视频有可提交初版</td>
+<td>全量需求对照、版本可追溯、演示可重复</td>
+</tr>
+<tr>
+<td><strong>10 月 27 日前</strong></td>
+<td>冻结参赛版本</td>
+<td>只修复明确缺陷，复验受影响功能，整理备份</td>
+</tr>
+<tr>
+<td><strong>11 月 3 日</strong></td>
+<td>提前提交目标</td>
+<td>核对文件、视频、附件和平台提交状态，保留官方截止前余量</td>
+</tr>
+</tbody>
+</table>
+<h3>3.3 按当前完成度安排角色协作</h3>
+<table>
+<thead>
+<tr>
+<th>角色</th>
+<th>建议近期重点</th>
+<th>主要交接成果</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>M1：算法与竞赛交付</td>
+<td>正式 DDS/ADSR、声部策略、混音数学、黄金向量、复音自证与报告</td>
+<td>明确位宽和定标的接口行为、可自动判定的向量、结果解释</td>
+</tr>
+<tr>
+<td>M2：FPGA 与系统集成</td>
+<td>正式合成核接入 T055、流水线与资源控制、时序、UART 状态及复核</td>
+<td>可构建的集成版本、时序报告、真实可观测状态</td>
+</tr>
+<tr>
+<td>M3：硬件、交互与实测</td>
+<td>输入接入与电平核对、多维控制、上板回归、波形与音频采集</td>
+<td>可复现接线与操作步骤、测量记录、演示素材</td>
+</tr>
+</tbody>
+</table>
+<p>以上是现有分工框架内的建议，不是重新分配任务。共享接口修改继续遵循仓库变更流程，具体授权以任务看板为准。</p>
+<p>结合 1.6 节评估，近期应把交接结果明确到以下四条链路：</p>
+<table>
+<thead>
+<tr>
+<th>交接链路</th>
+<th>上游必须交付</th>
+<th>下游完成动作</th>
+<th>解除阻塞的证据</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>M1 → M2：正式合成核</strong></td>
+<td>冻结接口下的算法行为、定点格式、声部策略、参考向量及自动判定方法</td>
+<td>按 D010 分担流水线和资源实现，接入正式顶层并运行集成验证</td>
+<td>PCM 比对通过、四声部行为正确、完整构建与时序结果</td>
+</tr>
+<tr>
+<td><strong>M2 → M3：可测整机版本</strong></td>
+<td>可追溯码流、对应约束/接线依据、操作步骤、状态计数定义</td>
+<td>上板回归、输入和音频采集、延迟及连续运行测量</td>
+<td>同一版本的波形、频谱、日志及异常复现记录</td>
+</tr>
+<tr>
+<td><strong>M2 ↔ M3：真实状态联调</strong></td>
+<td>M2 在现有 DIAG 基础上补齐削波真值并冻结完整 STAT；M3 对齐解析与采集</td>
+<td>验证真实连接、异常数据、CSV 保存与持续采集</td>
+<td>真实 STAT 原文与 CSV 一致；不能用模拟状态代替</td>
+</tr>
+<tr>
+<td><strong>M3 → M1/M2：实测反馈</strong></td>
+<td>测量条件、输入动作、预期/实际结果、码流版本与原始数据</td>
+<td>M1 分析算法或定标，M2 分析时序、接口和集成，修复后交回复测</td>
+<td>缺陷可重复触发，修复后的同条件回归通过</td>
+</tr>
+</tbody>
+</table>
+<p><strong><span style="color: #de350b;">🔴</span> 当前最需要解除的是“正式合成核未交付 → 集成与整机实测受阻”。</strong> 按现有 D010 分担实现工作，保留 M1 的算法定义与最终验收职责；同时让 M2 的状态输出和 M3 的实体输入、测量准备继续推进。建议每次同步只核对三件事：本次新增的验收证据、尚缺的上游交付、下一次可验证的输出。</p>
+<h3>3.4 每个里程碑的证据清单</h3>
+<ul>
+<li><strong>版本：</strong> 提交号、码流版本、顶层、工具版本和约束，确保演示对应明确代码。</li>
+<li><strong>功能：</strong> 正常演奏、边界场景、复位和异常恢复的自动测试与实机结果。</li>
+<li><strong>性能：</strong> 实际采样率、活跃声部数、资源占用、时序和端到端延迟。</li>
+<li><strong>稳定性：</strong> 保存欠载、事件溢出、削波等真实计数，并注明运行时长与输入负载。</li>
+<li><strong>材料：</strong> 同步保留频谱、波形、音频、视频及测量方法，防止最后补证据。</li>
+</ul>
+<h3>3.5 调整范围的触发条件</h3>
+<p><strong><span style="color: #de350b;">🔴</span> 若 10 月 11 日仍不能稳定演示四声部、ADSR 与基础交互，应立即停止新增拓展，集中完成基础验收。</strong> 即使临时两声部版本能演示，也不能作为四声部基础要求已满足的证据。</p>
+<p><strong><span style="color: #006644;">🟢</span> 若基础闭环提前完成，再根据实测选择收益最高的拓展。</strong> 扩展声部数前先检查每帧处理预算、存储与乘法资源、最坏时序和混音余量；新功能加入后必须复验原有演奏与异常场景。</p>
+<h3>3.6 依据与后续更新</h3>
+<table>
+<thead>
+<tr>
+<th>来源</th>
+<th>本报告使用内容</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="https://www.gowinsemi.com.cn/university/match2026">高云官方赛事页面</a></td>
+<td>作品截止日期、基础与拓展要求、核心评分和现场验证规则；核对于 2026-09-25</td>
+</tr>
+<tr>
+<td><a href="https://github.com/huangAngel730/fpga-electronic-piano/blob/5ad7eb77bff8afa9486c415034a2f6a562cd398f/code/docs/%E5%BD%93%E5%89%8D%E7%8A%B6%E6%80%81.md">当前状态</a></td>
+<td>集成状态、当前限制与待验证事项</td>
+</tr>
+<tr>
+<td><a href="https://github.com/huangAngel730/fpga-electronic-piano/blob/5ad7eb77bff8afa9486c415034a2f6a562cd398f/code/docs/%E4%BB%BB%E5%8A%A1%E7%9C%8B%E6%9D%BF.md">任务看板</a></td>
+<td>正式合成、输入、UART、测量和材料任务状态</td>
+</tr>
+<tr>
+<td><a href="https://github.com/huangAngel730/fpga-electronic-piano/blob/5ad7eb77bff8afa9486c415034a2f6a562cd398f/code/docs/%E8%A7%92%E8%89%B2%E5%88%86%E5%B7%A5.md">角色分工</a></td>
+<td>M1/M2/M3 当前职责、D010 分担边界、M2 统一复核职责</td>
+</tr>
+<tr>
+<td><a href="https://github.com/huangAngel730/fpga-electronic-piano/blob/5ad7eb77bff8afa9486c415034a2f6a562cd398f/code/docs/%E9%AA%8C%E8%AF%81%E8%AE%B0%E5%BD%95.md">验证记录</a></td>
+<td>V0072 MIDI、V0074 DIAG、V0075 构建、V0079 模型复核、V0080 预检及 V0081 显示预研</td>
+</tr>
+<tr>
+<td><a href="https://github.com/huangAngel730/fpga-electronic-piano/blob/5ad7eb77bff8afa9486c415034a2f6a562cd398f/code/docs/%E5%85%AB%E5%91%A8%E6%8E%92%E6%9C%9F%E4%B8%8E%E9%87%8C%E7%A8%8B%E7%A2%91.md">八周排期与里程碑</a></td>
+<td>内部演示、冻结和提交安排</td>
+</tr>
+<tr>
+<td><a href="https://github.com/huangAngel730/fpga-electronic-piano/blob/5ad7eb77bff8afa9486c415034a2f6a562cd398f/code/docs/%E8%B5%9B%E9%A2%98%E8%A6%81%E6%B1%82%E5%AF%B9%E7%85%A7%E8%A1%A8.md">赛题要求对照表</a></td>
+<td>需求与任务映射</td>
+</tr>
+<tr>
+<td><a href="https://github.com/huangAngel730/fpga-electronic-piano/blob/5ad7eb77bff8afa9486c415034a2f6a562cd398f/code/docs/%E9%A3%8E%E9%99%A9%E7%99%BB%E8%AE%B0%E8%A1%A8.md">风险登记表</a></td>
+<td>已登记风险与控制措施</td>
+</tr>
+</tbody>
+</table>
+<p>本轮同步至 2026-09-26 / 5ad7eb7。看板与复核反馈不完全同步时保留两者差异，不自行关闭任务。</p>
+<p>建议在“正式四声部上板”“真实状态联调”“端到端延迟实测”三个节点更新本报告。每次更新注明提交号与验证等级，仅有模型、仿真或旧版本证据的项目保持相应限定。</p>
