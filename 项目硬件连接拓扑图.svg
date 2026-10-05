@@ -1,0 +1,104 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1000" viewBox="0 0 1600 1000">
+<title>高云杯电子琴项目硬件连接拓扑图</title>
+<desc>设备方框和彩色线区分 MIDI 信号、USB、音频、HDMI、供电及共地；不表示等比例物理布线。</desc>
+<rect x="20" y="100" width="1560" height="830" rx="0" fill="#fdf0e4" stroke="#d3dfdf" stroke-width="2"/>
+<text x="42" y="59" text-anchor="start" font-family="SimHei, Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="32" fill="#224664">项目硬件连接拓扑图</text>
+<text x="42" y="88" text-anchor="start" font-family="SimHei, Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="21" fill="#5b7892">输入与接口层：MIDI 键盘、隔离模块、开发板、板载音频与显示；线色区分信号和供电。</text>
+<rect x="70" y="195" width="365" height="135" rx="9" fill="#f8fbff" stroke="#96acc0" stroke-width="2"/>
+<circle cx="117" cy="248" r="19" fill="none" stroke="#2867d7" stroke-width="3"/>
+<text x="117" y="258" text-anchor="middle" font-family="SimHei, Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="25" fill="#2867d7">键</text>
+<text x="150" y="238" text-anchor="start" font-family="SimHei, Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="25" fill="#224664">MIDIPLUS X4 III</text>
+<text x="150" y="269" text-anchor="start" font-family="SimHei, Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="21" fill="#224664">49 键 / DIN MIDI OUT</text>
+<text x="150" y="299" text-anchor="start" font-family="SimHei, Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="19" fill="#66809a">USB 供电 / 开发期采集</text>
+<rect x="70" y="405" width="365" height="200" rx="9" fill="#fff9f2" stroke="#d9a782" stroke-width="2"/>
+<circle cx="117" cy="460" r="19" fill="none" stroke="#dc713c" stroke-width="3"/>
+<text x="117" y="470" text-anchor="middle" font-family="SimHei, Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="25" fill="#dc713c">M</text>
+<text x="150" y="446" text-anchor="start" font-family="SimHei, Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="21" fill="#224664">M5Stack Unit MIDI (U187)</text>
+<text x="150" y="483" text-anchor="start" font-family="SimHei, Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="21" fill="#224664">DIN INPUT → 光耦隔离 / 整形</text>
+<text x="95" y="536" text-anchor="start" font-family="SimHei, Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="21" fill="#dc713c">Grove 白线：UART_TX / 3.3 V</text>
+<text x="95" y="569" text-anchor="start" font-family="SimHei, Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="21" fill="#dc313e">红线 5 V；黑线 GND</text>
+<text x="95" y="597" text-anchor="start" font-family="SimHei, Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="19" fill="#66809a">黄色 UART_RX：不接</text>
+<rect x="70" y="735" width="365" height="145" rx="9" fill="#fff7f6" stroke="#dc9090" stroke-width="2"/>
+<circle cx="117" cy="791" r="19" fill="none" stroke="#dc313e" stroke-width="3"/>
+<text x="117" y="801" text-anchor="middle" font-family="SimHei, Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="25" fill="#dc313e">电</text>
+<text x="150" y="775" text-anchor="start" font-family="SimHei, Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="25" fill="#224664">供电配置</text>
+<text x="150" y="808" text-anchor="start" font-family="SimHei, Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="21" fill="#dc313e">U187：独立稳定 5 V</text>
+<text x="150" y="837" text-anchor="start" font-family="SimHei, Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="19" fill="#224664">底板：双 USB 5 V / 12 V DC</text>
+<text x="150" y="866" text-anchor="start" font-family="SimHei, Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="19" fill="#224664">或 ≥3.6 V 锂电；详见文档</text>
+<rect x="545" y="185" width="540" height="670" rx="6" fill="#91cad8" stroke="#3a8297" stroke-width="3"/>
+<rect x="585" y="215" width="460" height="608" rx="3" fill="#b9e1e8" stroke="#84b8c7" stroke-width="2"/>
+<text x="815" y="262" text-anchor="middle" font-family="SimHei, Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="27" fill="#224664">Tang Mega 60K + NEO Dock</text>
+<text x="815" y="297" text-anchor="middle" font-family="SimHei, Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="23" fill="#224664">GW5AT-LV60 / 实时硬件音频</text>
+<rect x="615" y="331" width="400" height="172" rx="9" fill="#d9eef1" stroke="#7db0be" stroke-width="2"/>
+<text x="815" y="375" text-anchor="middle" font-family="SimHei, Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="23" fill="#224664">FPGA 事件处理与四声部合成</text>
+<text x="815" y="411" text-anchor="middle" font-family="SimHei, Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="21" fill="#224664">输入：R17 / 50 MHz 时钟 / 按键</text>
+<text x="815" y="445" text-anchor="middle" font-family="SimHei, Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="21" fill="#224664">输出：PCM / 状态 UART / 显示候选</text>
+<rect x="615" y="585" width="400" height="60" rx="9" fill="#edf9fb" stroke="#8cb9c3" stroke-width="2"/>
+<text x="815" y="621" text-anchor="middle" font-family="SimHei, Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="21" fill="#224664">PT8211-S  DAC / 16 bit LSBJ</text>
+<rect x="615" y="692" width="400" height="60" rx="9" fill="#edf9fb" stroke="#8cb9c3" stroke-width="2"/>
+<text x="815" y="728" text-anchor="middle" font-family="SimHei, Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="21" fill="#224664">NS4263 功放 / 耳机 / 扬声器接口</text>
+<polyline points="815,503 815,585" fill="none" stroke="#2867d7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+<polygon points="815,585 809.5,574.4 820.5,574.4" fill="#2867d7"/>
+<polyline points="815,645 815,692" fill="none" stroke="#1b8b75" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+<polygon points="815,692 809.5,681.4 820.5,681.4" fill="#1b8b75"/>
+<rect x="1160" y="195" width="370" height="135" rx="9" fill="#f8f6ff" stroke="#ab9cd9" stroke-width="2"/>
+<circle cx="1207" cy="248" r="19" fill="none" stroke="#864bd8" stroke-width="3"/>
+<text x="1207" y="258" text-anchor="middle" font-family="SimHei, Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="25" fill="#864bd8">屏</text>
+<text x="1242" y="238" text-anchor="start" font-family="SimHei, Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="25" fill="#224664">HDMI 显示器</text>
+<text x="1242" y="269" text-anchor="start" font-family="SimHei, Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="21" fill="#224664">640 × 480 独立候选</text>
+<text x="1242" y="299" text-anchor="start" font-family="SimHei, Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="19" fill="#66809a">已有限实屏；整机待验</text>
+<rect x="1160" y="405" width="370" height="175" rx="9" fill="#f5f8ff" stroke="#95ade0" stroke-width="2"/>
+<circle cx="1207" cy="466" r="19" fill="none" stroke="#2867d7" stroke-width="3"/>
+<text x="1207" y="476" text-anchor="middle" font-family="SimHei, Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="25" fill="#2867d7">机</text>
+<text x="1242" y="448" text-anchor="start" font-family="SimHei, Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="25" fill="#224664">电脑 / 开发工具</text>
+<text x="1242" y="482" text-anchor="start" font-family="SimHei, Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="21" fill="#224664">USB/JTAG 下载 / 串口状态</text>
+<text x="1242" y="517" text-anchor="start" font-family="SimHei, Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="21" fill="#224664">USB MIDI 采集（开发期）</text>
+<text x="1242" y="550" text-anchor="start" font-family="SimHei, Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="19" fill="#66809a">不承担正式音频合成</text>
+<rect x="1160" y="690" width="370" height="165" rx="9" fill="#f4fcf8" stroke="#9bc6b2" stroke-width="2"/>
+<circle cx="1207" cy="750" r="19" fill="none" stroke="#1b8b75" stroke-width="3"/>
+<text x="1207" y="760" text-anchor="middle" font-family="SimHei, Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="25" fill="#1b8b75">声</text>
+<text x="1242" y="734" text-anchor="start" font-family="SimHei, Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="25" fill="#224664">模拟音频输出</text>
+<text x="1242" y="768" text-anchor="start" font-family="SimHei, Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="20" fill="#224664">底板 Speaker → 无源扬声器</text>
+<text x="1242" y="803" text-anchor="start" font-family="SimHei, Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="20" fill="#224664">3.5 mm 耳机接口 / 有线耳机</text>
+<text x="1242" y="836" text-anchor="start" font-family="SimHei, Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="19" fill="#66809a">由板载 DAC / 功放驱动</text>
+<polyline points="252,330 252,405" fill="none" stroke="#dc713c" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+<polygon points="252,405 246.5,394.4 257.5,394.4" fill="#dc713c"/>
+<text x="270" y="377" text-anchor="start" font-family="SimHei, Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="19" fill="#dc713c">5 针 DIN / MIDI 电流环</text>
+<polyline points="435,514 545,514" fill="none" stroke="#dc713c" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+<polygon points="545,514 534.4,519.5 534.4,508.5" fill="#dc713c"/>
+<text x="449" y="499" text-anchor="start" font-family="SimHei, Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="19" fill="#dc713c">R17 = J9-8 / J14-5</text>
+<text x="450" y="562" text-anchor="start" font-family="SimHei, Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="19" fill="#dc713c">31250 baud / 8N1</text>
+<polyline points="1085,284 1160,284" fill="none" stroke="#864bd8" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+<polygon points="1160,284 1149.4,289.5 1149.4,278.5" fill="#864bd8"/>
+<text x="1090" y="267" text-anchor="start" font-family="SimHei, Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="19" fill="#864bd8">HDMI</text>
+<polyline points="1085,466 1160,466" fill="none" stroke="#2867d7" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+<polygon points="1160,466 1149.4,471.5 1149.4,460.5" fill="#2867d7"/>
+<text x="1091" y="451" text-anchor="start" font-family="SimHei, Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="19" fill="#2867d7">U15 UART_TX</text>
+<polyline points="1085,536 1130,536 1130,553 1160,553" fill="none" stroke="#2867d7" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="10 7"/>
+<polygon points="1160,553 1149.4,558.5 1149.4,547.5" fill="#2867d7"/>
+<text x="1092" y="588" text-anchor="start" font-family="SimHei, Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="19" fill="#2867d7">USB/JTAG</text>
+<polyline points="1085,733 1160,733" fill="none" stroke="#1b8b75" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+<polygon points="1160,733 1149.4,738.5 1149.4,727.5" fill="#1b8b75"/>
+<text x="1095" y="715" text-anchor="start" font-family="SimHei, Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="19" fill="#1b8b75">模拟输出</text>
+<polyline points="350,195 350,159 1484,159 1484,405" fill="none" stroke="#864bd8" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="10 7"/>
+<polygon points="1484,405 1478.5,394.4 1489.5,394.4" fill="#864bd8"/>
+<text x="700" y="140" text-anchor="start" font-family="SimHei, Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="19" fill="#864bd8">USB MIDI / 键盘供电 → 电脑（开发期）</text>
+<polyline points="214,735 214,605" fill="none" stroke="#dc313e" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+<polygon points="214,605 219.5,615.6 208.5,615.6" fill="#dc313e"/>
+<polyline points="329,735 329,605" fill="none" stroke="#374451" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+<polygon points="329,605 334.5,615.6 323.5,615.6" fill="#374451"/>
+<text x="91" y="707" text-anchor="start" font-family="SimHei, Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="19" fill="#dc313e">U187 供电</text>
+<polyline points="435,788 490,788 490,806 545,806" fill="none" stroke="#dc313e" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+<polygon points="545,806 534.4,811.5 534.4,800.5" fill="#dc313e"/>
+<polyline points="435,830 510,830 510,832 545,832" fill="none" stroke="#374451" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+<polygon points="545,832 534.4,837.5 534.4,826.5" fill="#374451"/>
+<rect x="40" y="890" width="1520" height="29" rx="2" fill="#ffffff" stroke="#c6d8df" stroke-width="1"/>
+<text x="56" y="910" text-anchor="start" font-family="SimHei, Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="19" fill="#2867d7">蓝：UART / USB-JTAG</text>
+<text x="315" y="910" text-anchor="start" font-family="SimHei, Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="19" fill="#dc713c">橙：MIDI 信号</text>
+<text x="525" y="910" text-anchor="start" font-family="SimHei, Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="19" fill="#864bd8">紫：HDMI / USB MIDI</text>
+<text x="814" y="910" text-anchor="start" font-family="SimHei, Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="19" fill="#1b8b75">绿：模拟音频</text>
+<text x="1033" y="910" text-anchor="start" font-family="SimHei, Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="19" fill="#dc313e">红：供电</text>
+<text x="1210" y="910" text-anchor="start" font-family="SimHei, Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="19" fill="#374451">黑：逻辑侧共地</text>
+<text x="45" y="967" text-anchor="start" font-family="SimHei, Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="19" fill="#5c6c7a">接线提示：DIN 不直连 FPGA；U187 白线接 R17、黑线接底板 GND；J14-11 是 5 V，不能作地。</text>
+<text x="45" y="993" text-anchor="start" font-family="SimHei, Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="19" fill="#5c6c7a">来源：源码仓库板级硬件事实、连接器使用方法、正式 CST；本图为接口拓扑示意，非等比例接线图。</text>
+</svg>
