@@ -76,7 +76,7 @@
 <polygon points="605.0,764.0 610.2,774.8 599.8,774.8" fill="#7950a0"/>
 <rect x="720" y="822" width="840" height="139" rx="12" fill="#fff8ee" stroke="#b46a20" stroke-width="2"/>
 <text x="735" y="858" font-family="Microsoft YaHei, sans-serif" font-size="24" font-weight="700" fill="#b46a20">诊断曲谱不是 PC 上传曲谱</text>
-<text x="735" y="895" font-family="Microsoft YaHei, sans-serif" font-size="20" font-weight="400" fill="#52677d">冻结 L 使用内部生成的显示曲谱，未接 T057 的双银行读端。</text>
+<text x="735" y="895" font-family="Microsoft YaHei, sans-serif" font-size="20" font-weight="400" fill="#52677d">冻结 L 使用内部生成的显示曲谱，未接 T057 的双存储区读端。</text>
 <text x="735" y="926" font-family="Microsoft YaHei, sans-serif" font-size="20" font-weight="400" fill="#52677d">当前显示接收演奏事件；真实 PCM 波形 T058 仍在独立候选。</text>
 <rect x="30" y="991" width="1540" height="155" rx="12" fill="#fff8ee" stroke="#dfba8e" stroke-width="2"/>
 <text x="50" y="1032" font-family="Microsoft YaHei, sans-serif" font-size="25" font-weight="700" fill="#b46a20">集成边界与证据</text>

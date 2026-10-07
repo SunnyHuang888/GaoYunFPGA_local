@@ -92,7 +92,7 @@
 <polygon points="1155.0,725.0 1165.8,719.8 1165.8,730.2" fill="#18785e"/>
 <polyline points="605,640 605,619 990,619 990,640" fill="none" stroke="#2563a5" stroke-width="3"/>
 <polygon points="990.0,640.0 984.8,629.2 995.2,629.2" fill="#2563a5"/>
-<text x="645" y="612" font-family="Microsoft YaHei, sans-serif" font-size="18" font-weight="400" fill="#2563a5">frame_tick → sample_req / req_id → 银行计算</text>
+<text x="645" y="612" font-family="Microsoft YaHei, sans-serif" font-size="18" font-weight="400" fill="#2563a5">frame_tick → sample_req / req_id → 声部计算组计算</text>
 <polyline points="55,725 18,725 18,334 465,334 465,290" fill="none" stroke="#2563a5" stroke-width="3"/>
 <polygon points="465.0,290.0 470.2,300.8 459.8,300.8" fill="#2563a5"/>
 <text x="55" y="331" font-family="Microsoft YaHei, sans-serif" font-size="18" font-weight="400" fill="#2563a5">UART 状态回传 → 上位机</text>
