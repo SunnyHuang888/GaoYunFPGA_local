@@ -1,0 +1,17 @@
+{
+  "version": 15,
+  "diagrams": 35,
+  "tables": 149,
+  "source_sha256": "e2f834ef4b4e22abc8355fdca96505c27ba2eb99dbf552a34d33e9d5d8b3b76d",
+  "errors": [
+    {
+      "file": "gaoyun-architecture-20260919.jpg",
+      "size_local": 1416594,
+      "size_remote": 4722127,
+      "download": "/download/attachments/173834273/gaoyun-architecture-20260919.jpg?version=3&modificationDate=1791211183745&api=v2",
+      "version": null,
+      "remote_sha": "15e6655e34baf4440ba42050214185a4189b63bced2d8cdd80447b14e10385b0",
+      "local_sha": "e8e9268282f5e17d3255390abf7954e322a482f70f5ce73dddf423fab86e6b6b"
+    }
+  ]
+}

@@ -1,0 +1,86 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1200" viewBox="0 0 1600 1200">
+<title>138K L｜音视频候选的实际结构</title><desc>L_locations_guard065 冻结源 / V0197 精确适配工程 · 主线 develop / 3c14bb4 · 无新版上板结论</desc>
+<rect width="1600" height="1200" fill="#f7f9fc"/>
+<text x="40" y="61" font-family="Microsoft YaHei, sans-serif" font-size="36" font-weight="700" fill="#17324d">138K L｜音视频候选的实际结构</text>
+<text x="40" y="102" font-family="Microsoft YaHei, sans-serif" font-size="20" font-weight="400" fill="#52677d">L_locations_guard065 冻结源 / V0197 精确适配工程 · 主线 develop / 3c14bb4 · 无新版上板结论</text>
+<rect x="30" y="126" width="1540" height="127" rx="12" fill="#f4effa" stroke="#b89acd" stroke-width="2"/>
+<text x="50" y="165" font-family="Microsoft YaHei, sans-serif" font-size="25" font-weight="700" fill="#7950a0">时钟与复位</text>
+<text x="280" y="163" font-family="Microsoft YaHei, sans-serif" font-size="23" font-weight="400" fill="#52677d">板上 50 MHz → TMDS_PLL → core 40 MHz / pixel 25 MHz / serial 125 MHz</text>
+<text x="280" y="202" font-family="Microsoft YaHei, sans-serif" font-size="21" font-weight="400" fill="#52677d">sys_rst_n &amp;&amp; PLL lock → 各域复位处理；失锁关闭功放，不能照搬 60K 单域说明。</text>
+<text x="280" y="238" font-family="Microsoft YaHei, sans-serif" font-size="19" font-weight="400" fill="#52677d">IP 文件名 TMDS_PLL_800_600_60.v 不代表当前画面分辨率；扫描实际为 640 × 480。</text>
+<text x="40" y="296" font-family="Microsoft YaHei, sans-serif" font-size="26" font-weight="700" fill="#18785e">音频与事件域 · 40 MHz</text>
+<rect x="40" y="315" width="350" height="164" rx="12" fill="#ffffff" stroke="#18785e" stroke-width="2"/>
+<text x="55" y="351" font-family="Microsoft YaHei, sans-serif" font-size="24" font-weight="700" fill="#18785e">输入与公共 FIFO</text>
+<text x="55" y="388" font-family="Microsoft YaHei, sans-serif" font-size="20" font-weight="400" fill="#52677d">按键 / MIDI 解析</text>
+<text x="55" y="419" font-family="Microsoft YaHei, sans-serif" font-size="20" font-weight="400" fill="#52677d">双源轮转 → 32 项 FIFO</text>
+<text x="55" y="450" font-family="Microsoft YaHei, sans-serif" font-size="20" font-weight="400" fill="#52677d">成功握手 = accepted event</text>
+<rect x="430" y="315" width="350" height="164" rx="12" fill="#ffffff" stroke="#18785e" stroke-width="2"/>
+<text x="445" y="351" font-family="Microsoft YaHei, sans-serif" font-size="24" font-weight="700" fill="#18785e">路由 / 控制快照</text>
+<text x="445" y="388" font-family="Microsoft YaHei, sans-serif" font-size="20" font-weight="400" fill="#52677d">router + allocator + CC64</text>
+<text x="445" y="419" font-family="Microsoft YaHei, sans-serif" font-size="20" font-weight="400" fill="#52677d">performance_control_snapshot</text>
+<text x="445" y="450" font-family="Microsoft YaHei, sans-serif" font-size="20" font-weight="400" fill="#52677d">锁 req_id / 槽身份 / 控制值</text>
+<rect x="820" y="315" width="350" height="164" rx="12" fill="#ffffff" stroke="#18785e" stroke-width="2"/>
+<text x="835" y="351" font-family="Microsoft YaHei, sans-serif" font-size="24" font-weight="700" fill="#18785e">FCW → 四槽 V1</text>
+<text x="835" y="388" font-family="Microsoft YaHei, sans-serif" font-size="20" font-weight="400" fill="#52677d">pitch_mod_snapshot_pipeline</text>
+<text x="835" y="419" font-family="Microsoft YaHei, sans-serif" font-size="20" font-weight="400" fill="#52677d">pitch_mod_fcw_pipeline</text>
+<text x="835" y="450" font-family="Microsoft YaHei, sans-serif" font-size="20" font-weight="400" fill="#52677d">修正 FCW → DDS / ADSR</text>
+<rect x="1210" y="315" width="350" height="164" rx="12" fill="#ffffff" stroke="#18785e" stroke-width="2"/>
+<text x="1225" y="351" font-family="Microsoft YaHei, sans-serif" font-size="24" font-weight="700" fill="#18785e">PCM / LSBJ 输出</text>
+<text x="1225" y="388" font-family="Microsoft YaHei, sans-serif" font-size="20" font-weight="400" fill="#52677d">Q15 增益 / 混音 / req_id</text>
+<text x="1225" y="419" font-family="Microsoft YaHei, sans-serif" font-size="20" font-weight="400" fill="#52677d">帧缓存 → i2s_tx → PT8211</text>
+<text x="1225" y="450" font-family="Microsoft YaHei, sans-serif" font-size="20" font-weight="400" fill="#52677d">48 kHz；同声部送 L / R</text>
+<polyline points="390,392 430,392" fill="none" stroke="#18785e" stroke-width="3"/>
+<polygon points="430.0,392.0 419.2,397.2 419.2,386.8" fill="#18785e"/>
+<polyline points="780,392 820,392" fill="none" stroke="#18785e" stroke-width="3"/>
+<polygon points="820.0,392.0 809.2,397.2 809.2,386.8" fill="#18785e"/>
+<polyline points="1170,392 1210,392" fill="none" stroke="#18785e" stroke-width="3"/>
+<polygon points="1210.0,392.0 1199.2,397.2 1199.2,386.8" fill="#18785e"/>
+<text x="50" y="526" font-family="Microsoft YaHei, sans-serif" font-size="22" font-weight="400" fill="#52677d">显示只旁观成功握手的事件；显示队列溢出不要求音频等待。音频采样由输出帧反向请求。</text>
+<polyline points="215,479 215,491 20,491 20,683 40,683" fill="none" stroke="#7950a0" stroke-width="3"/>
+<polygon points="40.0,683.0 29.2,688.2 29.2,677.8" fill="#7950a0"/>
+<text x="40" y="565" font-family="Microsoft YaHei, sans-serif" font-size="26" font-weight="700" fill="#7950a0">视频支路 · CDC → 25 MHz 像素域 → 125 MHz 串行域</text>
+<rect x="40" y="600" width="350" height="164" rx="12" fill="#ffffff" stroke="#7950a0" stroke-width="2"/>
+<text x="55" y="636" font-family="Microsoft YaHei, sans-serif" font-size="24" font-weight="700" fill="#7950a0">事件副本跨域</text>
+<text x="55" y="673" font-family="Microsoft YaHei, sans-serif" font-size="20" font-weight="400" fill="#52677d">visual_event_bridge</text>
+<text x="55" y="704" font-family="Microsoft YaHei, sans-serif" font-size="20" font-weight="400" fill="#52677d">32 项队列 / 握手邮箱</text>
+<text x="55" y="735" font-family="Microsoft YaHei, sans-serif" font-size="20" font-weight="400" fill="#52677d">drop / desync 独立观测</text>
+<rect x="430" y="600" width="350" height="164" rx="12" fill="#ffffff" stroke="#7950a0" stroke-width="2"/>
+<text x="445" y="636" font-family="Microsoft YaHei, sans-serif" font-size="24" font-weight="700" fill="#7950a0">键态 / 曲谱 / 命中</text>
+<text x="445" y="673" font-family="Microsoft YaHei, sans-serif" font-size="20" font-weight="400" fill="#52677d">m3_visualizer</text>
+<text x="445" y="704" font-family="Microsoft YaHei, sans-serif" font-size="20" font-weight="400" fill="#52677d">live_state / score_tracker</text>
+<text x="445" y="735" font-family="Microsoft YaHei, sans-serif" font-size="20" font-weight="400" fill="#52677d">scene_renderer / hit_flash</text>
+<rect x="820" y="600" width="350" height="164" rx="12" fill="#ffffff" stroke="#7950a0" stroke-width="2"/>
+<text x="835" y="636" font-family="Microsoft YaHei, sans-serif" font-size="24" font-weight="700" fill="#7950a0">扫描与像素对齐</text>
+<text x="835" y="673" font-family="Microsoft YaHei, sans-serif" font-size="20" font-weight="400" fill="#52677d">video_scan_timing</text>
+<text x="835" y="704" font-family="Microsoft YaHei, sans-serif" font-size="20" font-weight="400" fill="#52677d">640 × 480 有效区</text>
+<text x="835" y="735" font-family="Microsoft YaHei, sans-serif" font-size="20" font-weight="400" fill="#52677d">RGB + HS/VS/DE 同拍寄存</text>
+<rect x="1210" y="600" width="350" height="164" rx="12" fill="#ffffff" stroke="#7950a0" stroke-width="2"/>
+<text x="1225" y="636" font-family="Microsoft YaHei, sans-serif" font-size="24" font-weight="700" fill="#7950a0">DVI / TMDS 输出</text>
+<text x="1225" y="673" font-family="Microsoft YaHei, sans-serif" font-size="20" font-weight="400" fill="#52677d">DVI_TX_Top 厂商 IP</text>
+<text x="1225" y="704" font-family="Microsoft YaHei, sans-serif" font-size="20" font-weight="400" fill="#52677d">RGB 编码 / 差分输出</text>
+<text x="1225" y="735" font-family="Microsoft YaHei, sans-serif" font-size="20" font-weight="400" fill="#52677d">HDMI 口接显示器</text>
+<polyline points="390,683 430,683" fill="none" stroke="#7950a0" stroke-width="3"/>
+<polygon points="430.0,683.0 419.2,688.2 419.2,677.8" fill="#7950a0"/>
+<polyline points="780,683 820,683" fill="none" stroke="#7950a0" stroke-width="3"/>
+<polygon points="820.0,683.0 809.2,688.2 809.2,677.8" fill="#7950a0"/>
+<polyline points="1170,683 1210,683" fill="none" stroke="#7950a0" stroke-width="3"/>
+<polygon points="1210.0,683.0 1199.2,688.2 1199.2,677.8" fill="#7950a0"/>
+<polyline points="995,600 995,591 605,591 605,600" fill="none" stroke="#7950a0" stroke-width="3"/>
+<polygon points="605.0,600.0 599.8,589.2 610.2,589.2" fill="#7950a0"/>
+<text x="800" y="584" font-family="Microsoft YaHei, sans-serif" font-size="17" font-weight="400" fill="#7950a0">扫描坐标 / 帧节拍送场景</text>
+<rect x="40" y="822" width="640" height="139" rx="12" fill="#ffffff" stroke="#7950a0" stroke-width="2"/>
+<text x="55" y="858" font-family="Microsoft YaHei, sans-serif" font-size="24" font-weight="700" fill="#7950a0">另一路显示控制</text>
+<text x="55" y="895" font-family="Microsoft YaHei, sans-serif" font-size="20" font-weight="400" fill="#52677d">audio_visual_display_probe 内部诊断曲谱 / 自动模式切换</text>
+<text x="55" y="926" font-family="Microsoft YaHei, sans-serif" font-size="20" font-weight="400" fill="#52677d">→ visual_control_bridge / visual_mailbox_cdc → 场景</text>
+<polyline points="605,822 605,764" fill="none" stroke="#7950a0" stroke-width="3"/>
+<polygon points="605.0,764.0 610.2,774.8 599.8,774.8" fill="#7950a0"/>
+<rect x="720" y="822" width="840" height="139" rx="12" fill="#fff8ee" stroke="#b46a20" stroke-width="2"/>
+<text x="735" y="858" font-family="Microsoft YaHei, sans-serif" font-size="24" font-weight="700" fill="#b46a20">诊断曲谱不是 PC 上传曲谱</text>
+<text x="735" y="895" font-family="Microsoft YaHei, sans-serif" font-size="20" font-weight="400" fill="#52677d">冻结 L 使用内部生成的显示曲谱，未接 T057 的双银行读端。</text>
+<text x="735" y="926" font-family="Microsoft YaHei, sans-serif" font-size="20" font-weight="400" fill="#52677d">当前显示接收演奏事件；真实 PCM 波形 T058 仍在独立候选。</text>
+<rect x="30" y="991" width="1540" height="155" rx="12" fill="#fff8ee" stroke="#dfba8e" stroke-width="2"/>
+<text x="50" y="1032" font-family="Microsoft YaHei, sans-serif" font-size="25" font-weight="700" fill="#b46a20">集成边界与证据</text>
+<text x="50" y="1072" font-family="Microsoft YaHei, sans-serif" font-size="22" font-weight="400" fill="#52677d">冻结 L 未包含：动态 V1/三角切换、延迟、面板候选、T057 上传、T058 真实波形、T059 BLE。</text>
+<text x="50" y="1113" font-family="Microsoft YaHei, sans-serif" font-size="21" font-weight="400" fill="#52677d">V0197 的 L5 只覆盖该精确输入集合；追加任何模块后，须重新验证功能、CDC、资源和整机时序。</text>
+<text x="40" y="1188" font-family="Microsoft YaHei, sans-serif" font-size="18" font-weight="400" fill="#52677d">本图为源码结构审阅；实物 Bank 电压、MIDI 电平 / 共地及 HDMI 条件见原验收清单。</text>
+</svg>

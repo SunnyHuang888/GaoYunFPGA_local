@@ -1,0 +1,19 @@
+{
+  "baseline": "3c14bb4e225c8971ab90c4f7c85c684dfb42d247",
+  "evidence": "L0 static review only",
+  "functional_sections": 38,
+  "detail_subsections": 266,
+  "mermaid_blocks": 38,
+  "source_project_hdl_entries": {
+    "60K": 32,
+    "138K_L": 45
+  },
+  "links_valid": true,
+  "diagram_pixels": [
+    1600,
+    1200
+  ],
+  "md_sha256": "da78c9b078ee4a40efb02c53c7e59a8f19979c18fbaadf38e361c9e59a3e85d7",
+  "MIDI_section_preserved_exactly": true,
+  "mermaid_rendered": 38
+}

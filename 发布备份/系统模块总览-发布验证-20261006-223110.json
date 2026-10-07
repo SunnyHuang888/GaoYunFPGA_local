@@ -1,0 +1,11 @@
+{
+  "page_id": "173834273",
+  "version": 16,
+  "tables": 152,
+  "images": 37,
+  "attachments_verified": 40,
+  "architecture_image_pixel_identical": true,
+  "architecture_note": "server returns lossless PNG; RGB pixels match local image",
+  "source_sha256": "b553c0aabf5d6e47ad6aba57547586a86dc7f81f59c66742c07d8adb5d4f62f8",
+  "body_verified": true
+}
