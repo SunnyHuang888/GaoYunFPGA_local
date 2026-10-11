@@ -1,3 +1,7 @@
 # 视频仅保留在本地，不提交到 GitHub。
 *.mp4
 *.MP4
+
+# Python 图件生成缓存仅保留本地。
+__pycache__/
+*.py[cod]
