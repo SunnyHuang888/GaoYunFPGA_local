@@ -1,0 +1,161 @@
+{
+  "id": "173834293",
+  "type": "page",
+  "status": "current",
+  "title": "高云杯电子琴 - 项目进度分析",
+  "version": {
+    "by": {
+      "type": "known",
+      "username": "codex",
+      "userKey": "40289f26a0899b9301a0a53b344a0000",
+      "profilePicture": {
+        "path": "/images/icons/profilepics/default.svg",
+        "width": 48,
+        "height": 48,
+        "isDefault": true
+      },
+      "displayName": "Codex",
+      "_links": {
+        "self": "https://www.hsunny.cn/rest/api/user?key=40289f26a0899b9301a0a53b344a0000"
+      },
+      "_expandable": {
+        "status": ""
+      }
+    },
+    "when": "2026-10-13T14:24:45.456Z",
+    "message": "按7fd3e17更新架构、进度及需求，明确N32综合L4与STA边界",
+    "number": 13,
+    "minorEdit": false,
+    "hidden": false,
+    "_links": {
+      "self": "https://www.hsunny.cn/rest/experimental/content/173834293/version/13"
+    },
+    "_expandable": {
+      "content": "/rest/api/content/173834293"
+    }
+  },
+  "ancestors": [
+    {
+      "id": "106168322",
+      "type": "page",
+      "status": "current",
+      "title": "电子技术 Home",
+      "extensions": {
+        "position": "none"
+      },
+      "_links": {
+        "webui": "/pages/viewpage.action?pageId=106168322",
+        "edit": "/pages/resumedraft.action?draftId=106168322",
+        "tinyui": "/x/AgBUBg",
+        "self": "https://www.hsunny.cn/rest/api/content/106168322"
+      },
+      "_expandable": {
+        "container": "/rest/api/space/ICT",
+        "metadata": "",
+        "operations": "",
+        "children": "/rest/api/content/106168322/child",
+        "restrictions": "/rest/api/content/106168322/restriction/byOperation",
+        "history": "/rest/api/content/106168322/history",
+        "ancestors": "",
+        "body": "",
+        "version": "",
+        "descendants": "/rest/api/content/106168322/descendant",
+        "space": "/rest/api/space/ICT"
+      }
+    },
+    {
+      "id": "125566978",
+      "type": "page",
+      "status": "current",
+      "title": "大学赛事",
+      "extensions": {
+        "position": "none"
+      },
+      "_links": {
+        "webui": "/pages/viewpage.action?pageId=125566978",
+        "edit": "/pages/resumedraft.action?draftId=125566978",
+        "tinyui": "/x/AgB8Bw",
+        "self": "https://www.hsunny.cn/rest/api/content/125566978"
+      },
+      "_expandable": {
+        "container": "/rest/api/space/ICT",
+        "metadata": "",
+        "operations": "",
+        "children": "/rest/api/content/125566978/child",
+        "restrictions": "/rest/api/content/125566978/restriction/byOperation",
+        "history": "/rest/api/content/125566978/history",
+        "ancestors": "",
+        "body": "",
+        "version": "",
+        "descendants": "/rest/api/content/125566978/descendant",
+        "space": "/rest/api/space/ICT"
+      }
+    },
+    {
+      "id": "173834248",
+      "type": "page",
+      "status": "current",
+      "title": "FPGA创新赛",
+      "extensions": {
+        "position": "none"
+      },
+      "_links": {
+        "webui": "/pages/viewpage.action?pageId=173834248",
+        "edit": "/pages/resumedraft.action?draftId=173834248",
+        "tinyui": "/x/CIBcCg",
+        "self": "https://www.hsunny.cn/rest/api/content/173834248"
+      },
+      "_expandable": {
+        "container": "/rest/api/space/ICT",
+        "metadata": "",
+        "operations": "",
+        "children": "/rest/api/content/173834248/child",
+        "restrictions": "/rest/api/content/173834248/restriction/byOperation",
+        "history": "/rest/api/content/173834248/history",
+        "ancestors": "",
+        "body": "",
+        "version": "",
+        "descendants": "/rest/api/content/173834248/descendant",
+        "space": "/rest/api/space/ICT"
+      }
+    }
+  ],
+  "body": {
+    "storage": {
+      "value": "<ac:structured-macro ac:name=\"toc\" ac:schema-version=\"1\" ac:macro-id=\"4e43240b-9c41-4f45-a421-beb7022c7b6e\"><ac:parameter ac:name=\"minLevel\">2</ac:parameter><ac:parameter ac:name=\"maxLevel\">4</ac:parameter></ac:structured-macro>\n<h1>项目进度分析</h1>\n<blockquote>\n<p>评估日期：2026-10-13；项目：高云杯实时多音色合成电子乐器引擎。<br />\n代码基线：<code>origin/develop</code> / <code>7fd3e1707537a2afc359612707a66a1715887484</code>；本次fetch后读取远端Git快照，本地源码HEAD仍为3c14bb4，未修改或快进源码。<br />\n本次是文档/源码静态核对。仿真、数学对照、构建与实物结论均引用已有记录，没有在本轮重跑。</p>\n</blockquote>\n<p>标记：🟢 指定范围通过；🟠 尚待组合/实体闭环；🔴 影响完整交付。任务数不等于系统完成率，提交数量不等于个人贡献。</p>\n<h2>一、项目进度分析</h2>\n<h3>1.1 总体判断</h3>\n<p><strong>四声部138K音画/曲谱RAM组合保留离线L5；N32显式pROM候选新达到综合L4，但分配器长组合路径阻止40MHz物理准入，同版实物验收仍缺。</strong> 不再把全部N32工作描述为&ldquo;尚未综合&rdquo;，也不把综合成功写成32声部整机完成。</p>\n<p>10月13日的新任务由M3主责平衡分配器、独立N32/R1接通、事件压力验证与资源准备；M2保留最终复核、综合安排、生产接入及整机STA；M1保留算法口径、T052职责与T060数学支持。新分配器仅派发、尚未实现，通知仍待用户转发。D047/D048及追加任务用于明确工作分担，不取消T052/T060。</p>\n<p>APK与C3固件已有真实目标构建，实体无线&rarr;FPGA仍待验。D044继续保持固定左波形、手机传谱&rarr;存储ACK/READ；自动播放后置，频谱/在线曲库保留建议身份。</p>\n<h3>1.2 分模块进度与证据</h3>\n<table>\n<thead>\n<tr>\n<th>范围</th>\n<th>最新证据 / 实际成果</th>\n<th>尚未完成 / 验收边界</th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td>138K音画与曲谱RAM精确组合</td>\n<td>V0263/V0264，night_cache_parser_hold_20261010_v1，62输入/53工程项；13 UART场景及声画对照、唯一完整构建通过</td>\n<td>🟢 指定组合离线L5：Setup+1.637/Hold0/Recovery+0.325/Removal+0.010 ns；23264 Logic/10609 Reg/46 DSP/32 BSRAM/86 SSRAM。不是实物L6；原manifest的false为准备时状态，结论取最终严格门禁记录</td>\n</tr>\n<tr>\n<td>真实PCM波形T058</td>\n<td>像素模块已交付，V0217&ndash;V0219数字子项；V0234波形v3离线L5，后续进入上述新组合</td>\n<td>🟠 固定左波形/区域/模式；未实屏。旧V0230时序拒收保留历史，不再当最新组合结论</td>\n</tr>\n<tr>\n<td>曲谱上传T057/T062</td>\n<td>同步双存储区、请求缓存/CRC流水化；5e1d13c模块与新整机组合分层验证</td>\n<td>🟠 上传/原子提交/ACK/READ有数字证据，自动播放、真实手机到FPGA传输与实物未验；不是512事件所有整机场景都已覆盖</td>\n</tr>\n<tr>\n<td>BLE/App T059</td>\n<td>V0233真实debug APK、V0235真实C3固件目标构建；V0227三项连接/扫描/日志修复限定通过</td>\n<td>🟠 手机安装、真实SDK回调、无线及实体FPGA ACK/READ仍未验；不能再写尚无实现或SDK未构建</td>\n</tr>\n<tr>\n<td>完整黄金T060</td>\n<td>V0293依赖闭包修复；V0308/V0312真实A/B尝试失败，V0314准备精确compile-only诊断</td>\n<td>🔴 A编译0xC0000005；有未验残留vvp但未运行，无有效capture，B未启动。新诊断仅准备，完整任务PARTIAL</td>\n</tr>\n<tr>\n<td>复音候选T061</td>\n<td>N8/N16/N32限定L2/L3；V0276 N32/R1约0.216秒仿真，V0307准确clipped，V0316显式pROM增量等价</td>\n<td>🟠 97请求含1取消、96结果等限定场景不代表长期实机；候选未接正式四声部顶层</td>\n</tr>\n<tr>\n<td>N32资源与工程</td>\n<td>V0318显式pROM候选实际综合L4通过，878.948秒；Logic72583/Reg42321/BSRAM162/SSRAM190</td>\n<td>🔴 allocator预布局178级、估计6.109MHz；不能当40MHz STA。无PnR/新码流/设备验收；DSP物理容量未定，保留42 MULTALU27X18及128 MULT27X36类型</td>\n</tr>\n<tr>\n<td>T061取消恢复</td>\n<td>V0284限定数学证据保留；V0293已闭合B2M封存依赖缺口，V0296严格scope签收</td>\n<td>🟠 新依赖包完整不追认旧包；不等于重新完成全部数学/RTL或整机验收</td>\n</tr>\n<tr>\n<td>竞赛自证T052</td>\n<td>V0303 v5帧边界修复及4207结果数学核对；V0319 P0组合已闭合三个静态阻断</td>\n<td>🔴 原捕获发布完整性仍UNKNOWN；真实128沿采集未执行，软件预测6接受/3发布/3取消不是RTL结果</td>\n</tr>\n<tr>\n<td>PCM帧适配与削波</td>\n<td>V0299/V0300短协议验证，V0307准确clipped元数据与ID/PCM同沿保持、取消/reset清除</td>\n<td>🟠 独立候选限定L2，不套用旧四声部L5或认定生产接入</td>\n</tr>\n<tr>\n<td>T007验证运行器</td>\n<td>V0320修复日志隔离、进程树超时和失败收据；定向13检查/欠载0、九门禁PASS</td>\n<td>🟢 当前发布阻塞解除；这是脚本与数字验证证据，不是新上板结果</td>\n</tr>\n</tbody>\n</table>\n<p>既有60K四声部、V1钢琴、CC64和串口观测的限定实物成果保留；动态双音色V0184只限其60K数字/L5，不能与138K Pitch/Mod、波形和曲谱组合拼接成全部已验收。T028延迟效果独立成果保留，正式接入与实物仍未完成。</p>\n<h3>1.3 验证证据与版本边界</h3>\n<table>\n<thead>\n<tr>\n<th>配置</th>\n<th>记录与结果</th>\n<th>可使用的结论</th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td>历史60K</td>\n<td>V0137四声部/力度/释放；V0138 CC64；V0142/V0145 V1；V0184动态双音色L5</td>\n<td>各自指定版本结果，非最新138K实物证明</td>\n</tr>\n<tr>\n<td>原138K冻结L</td>\n<td>V0197：18823 Logic/8669 Reg/46 DSP/20 BSRAM，Setup+1.279 ns</td>\n<td>原精确L离线L5；保留回退，不覆盖新模块</td>\n</tr>\n<tr>\n<td>T058波形v2&rarr;v3</td>\n<td>V0230 Recovery/Hold拒收；V0234定向修复后Setup+1.846/Recovery+0.938 ns、全域门禁通过</td>\n<td>旧失败保留，新v3离线L5，不等上板</td>\n</tr>\n<tr>\n<td>新RAM/MIDI/Hold组合</td>\n<td>V0263/V0264，d5373af</td>\n<td>数字声画/上传及同版离线L5；Hold0、Removal10ps，不能夸大余量</td>\n</tr>\n<tr>\n<td>N32独立候选</td>\n<td>V0316功能等价、V0318综合L4、V0321报告复核</td>\n<td>有实际综合资源；未PnR/40MHz STA/实机。170是DSP宏计数，非物理块数，不替代四声部整机</td>\n</tr>\n</tbody>\n</table>\n<p>任务主表部分T057/T062文本仍停在早期超时或待复核阶段，当前技术结论采用较新的V0263/V0264；主表整体&ldquo;进行中&rdquo;保持，不擅自改源码任务状态。准备manifest中的<code>physical_STA_passed=false</code>与后续最终门禁是不同时间点，不能仅凭准备文件覆盖正式验证记录。</p>\n<h3>1.4 时间与关键路径</h3>\n<p>距仓库原内部10月18日基础演示目标约5天，该日期不是本轮重新确认的外部赛事截止日。最终提交时间以官方最新通知核对；本轮没有重新查询赛事排期。</p>\n<p>关键路径为：<strong>确定同版四声部组合及硬件恢复条件 &rarr; 按授权开展实体音画/曲谱验证 &rarr; T060最小完整黄金与T052自证收口 &rarr; 可重复演示和材料成稿</strong>。32声部候选另行通过资源/吞吐/时序准入，未满足时交最高实际稳定档，不影响保留四声部回退。</p>\n<h3>1.5 主要完成风险</h3>\n<table>\n<thead>\n<tr>\n<th>风险</th>\n<th>级别</th>\n<th>影响</th>\n<th>收口措施</th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td>最新精确组合尚无L6</td>\n<td>🔴</td>\n<td>离线正确不能证明DAC、HDMI、无线和真实接线共存</td>\n<td>M3核电气/恢复，M2提供同版输入/码流/操作边界；按授权验证</td>\n</tr>\n<tr>\n<td>T052真实发布完整性未闭合</td>\n<td>🔴</td>\n<td>数学一致仍不能证明所有应发布结果无丢失</td>\n<td>按V0319冻结组合准备最终机器/工具/输入，取得精确采集结果后独立核对归宿</td>\n</tr>\n<tr>\n<td>T060仍PARTIAL</td>\n<td>🔴</td>\n<td>关键生命周期/重叠场景未闭合</td>\n<td>先处理V0312编译异常；V0314仅诊断准备，后继执行需独立范围；不重跑无关历史组</td>\n</tr>\n<tr>\n<td>N32分配器长路径/未STA</td>\n<td>🔴</td>\n<td>综合通过但预布局178级路径，40MHz未获证明</td>\n<td>M3实现独立平衡分配器并保持选择策略和接口拍数；M2审核后再做新同版资源/时序验证</td>\n</tr>\n<tr>\n<td>新时序余量较紧</td>\n<td>🟠</td>\n<td>Hold0、Removal0.010 ns对后续增量无保证</td>\n<td>不降既有门槛，新增接入重做同版完整检查</td>\n</tr>\n<tr>\n<td>曲谱流程边界</td>\n<td>🟠</td>\n<td>手机目标已构建但真实ACK/READ未验，自动播放未接</td>\n<td>本阶段验收目标保持传输存储；不以APK存在或上传成功代替演奏</td>\n</tr>\n<tr>\n<td>证据复现与执行工具</td>\n<td>🟠</td>\n<td>B2M缺依赖已修；T060编译异常及跨机工具差异仍影响后续执行</td>\n<td>保持源/ROM/工具/配置身份和失败收据，区分静态准备与实际采集</td>\n</tr>\n<tr>\n<td>端到端及材料</td>\n<td>🟠</td>\n<td>历史数字延迟不等于模拟实测，成稿与现场证明仍缺</td>\n<td>遵守T031阶段收口边界，清楚标注未测项，完成最低演示素材</td>\n</tr>\n</tbody>\n</table>\n<h3>1.6 按M1/M2/M3分工评估</h3>\n<h4>1.6.1 主表任务统计</h4>\n<p>按7fd3e17的W周次主表（本轮重新核对，状态数量与10月11日相同）、排除已撤销登记任务T011，共60项。T033按最新分工单列&ldquo; M3工程/M1数学&rdquo;；T060/T061/T062新增并在进行中。相同成果可能同时支撑T033/T061，不能当作两份独立功能完成度。</p>\n<table>\n<thead>\n<tr>\n<th>归属</th>\n<th>总数</th>\n<th>已完成</th>\n<th>进行中</th>\n<th>待开始</th>\n<th>忽略</th>\n<th>暂缓</th>\n<th>已关闭</th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td>M1</td>\n<td>11</td>\n<td>3</td>\n<td>3</td>\n<td>3</td>\n<td>1</td>\n<td>1</td>\n<td>0</td>\n</tr>\n<tr>\n<td>M2</td>\n<td>23</td>\n<td>12</td>\n<td>2</td>\n<td>0</td>\n<td>4</td>\n<td>5</td>\n<td>0</td>\n</tr>\n<tr>\n<td>M3</td>\n<td>19</td>\n<td>4</td>\n<td>7</td>\n<td>4</td>\n<td>2</td>\n<td>1</td>\n<td>1</td>\n</tr>\n<tr>\n<td>M1+M2</td>\n<td>3</td>\n<td>2</td>\n<td>1</td>\n<td>0</td>\n<td>0</td>\n<td>0</td>\n<td>0</td>\n</tr>\n<tr>\n<td>M3工程/M1数学</td>\n<td>1</td>\n<td>0</td>\n<td>1</td>\n<td>0</td>\n<td>0</td>\n<td>0</td>\n<td>0</td>\n</tr>\n<tr>\n<td>三人</td>\n<td>3</td>\n<td>0</td>\n<td>0</td>\n<td>1</td>\n<td>0</td>\n<td>2</td>\n<td>0</td>\n</tr>\n<tr>\n<td>合计</td>\n<td>60</td>\n<td>21</td>\n<td>14</td>\n<td>8</td>\n<td>7</td>\n<td>9</td>\n<td>1</td>\n</tr>\n</tbody>\n</table>\n<h4>1.6.2 实际交付成熟度</h4>\n<table>\n<thead>\n<tr>\n<th>角色</th>\n<th>当前成果</th>\n<th>剩余交付与完成度判断</th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td>M1</td>\n<td>既有DDS/包络/音色/效果器算法成果；T052 v5已有4207结果数学一致；基础数学定义与最小算法纠错持续</td>\n<td>🔴 T052整体未签，数学事实答复/原范围纠错与竞赛材料仍要完成；完整黄金和工程扩容已分担给M3，不再按旧分工要求M1独自重做</td>\n</tr>\n<tr>\n<td>M2</td>\n<td>138K新组合功能与L5；阶段独立复核；N32 pROM等价、实际综合L4与报告审核；V0320发布门禁修复</td>\n<td>🟠 集成/离线验收成熟度明显提升；资源定档、同版实物准入、最终交付仍未闭合</td>\n</tr>\n<tr>\n<td>M3</td>\n<td>T058波形、T057/T062传输存储、APK/C3构建；T060独立数学；T061 N8/N16/N32候选与生命周期/取消测试</td>\n<td>🟠 独立软件/RTL成果显著增加；B2M依赖已闭合；新N32平衡分配器尚未开始，完整黄金、真实BLE&rarr;FPGA、板级共存及演示素材未齐</td>\n</tr>\n</tbody>\n</table>\n<p>没有统一工时权重和完整整机验收清单，故不把&ldquo;已完成任务数/总数&rdquo;包装为个人或系统完成百分比。</p>\n<h2>二、评奖要点分析</h2>\n<h3>2.1 关键点与改进点</h3>\n<table>\n<thead>\n<tr>\n<th>关键点</th>\n<th>当前优势</th>\n<th>缺口与改进</th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td>FPGA实时合成</td>\n<td>真实DDS/ADSR/混音和事件链路、较完整RTL证据</td>\n<td>用同版演奏、PCM和现场采样证明，不能以软件WAV替代</td>\n</tr>\n<tr>\n<td>独立振荡器吞吐量</td>\n<td>T061扩展候选已有N32指定验证</td>\n<td>已有N32实际综合，继续解决分配器时序并取得物理验收；评分按活跃可闻独立振荡器&times;实际采样率，峰数/谐波不等于声部数</td>\n</tr>\n<tr>\n<td>表情和音色</td>\n<td>已有力度、延音、Pitch/Mod及两音色分别验证</td>\n<td>说明不同工程边界；最终演示同版控制效果，自研交互范围仍需对题</td>\n</tr>\n<tr>\n<td>视听反馈</td>\n<td>真实PCM波形已接入新离线组合</td>\n<td>先完成实屏与声音共存；频谱仍是需求优化建议，D044未批准新增显示</td>\n</tr>\n<tr>\n<td>手机联动</td>\n<td>真APK/C3与可靠协议已有基础</td>\n<td>展示真实上传/ACK/READ，区分下载到设备与播放曲目</td>\n</tr>\n<tr>\n<td>可复现证据</td>\n<td>原始日志、哈希、正反例和独立复核丰富</td>\n<td>收口T052真实完整性与T060编译/捕获问题，筛选评委易理解的关键材料</td>\n</tr>\n</tbody>\n</table>\n<h3>2.2 表述边界</h3>\n<p>不能将&ldquo;有32声部仿真&rdquo;表述为&ldquo;已实现32声部实机&rdquo;；不能将APK编译表述为手机无线实测；不能把13个整机UART场景外推512事件全部边界；不能把旧L6和新L5合并成新版L6。获奖相关评价采用关键点与证据缺口，不估算获奖概率。</p>\n<h2>三、项目推进建议</h2>\n<h3>3.1 当前范围与顺序</h3>\n<p>D044保持成果范围，D047/D048及10月13日追加任务明确分担；三岗位编号不变。自动播放、联网曲库、频谱、编辑器和新效果不因需求建议自动恢复实施。</p>\n<ol>\n<li><strong>基础验收：</strong> M1给出T052/T060算法口径和必要纠错；M3按已签P0组合准备T052真实采集，处理T060失败后继；M2核最终范围和证据。旧许可消费不表示新后继已经执行。</li>\n<li><strong>N32实现：</strong> M3先做独立平衡分配器，再接N32/R1、增量事件压力和资源工程；保持声音算法、选择策略及公共接口拍数。M2不并行重复实现，负责复核与后续物理准入。</li>\n<li><strong>整机与实体：</strong> 保留当前四声部回退；新N32候选未通过同版PnR/STA/实物前，不默认参赛已32声部。M2与M3按既定边界准备同版音画及真实传谱验收。</li>\n<li><strong>材料：</strong> 报告同时展示已验证能力和未闭合项，整理演奏、波形及传谱证据；不把软件WAV、APK构建或综合成功当作实体演示。</li>\n</ol>\n<h3>3.2 依据与维护</h3>\n<p>依据同一快照的<code>当前状态.md</code>、<code>任务看板.md</code>、<code>验证记录.md</code>（重点V0290～V0321）、D044/D047/D048及10月13日N32任务单及精确组合manifest。源码：<a href=\"https://github.com/huangAngel730/fpga-electronic-piano/tree/7fd3e1707537a2afc359612707a66a1715887484\">7fd3e17快照</a>。架构见<a href=\"https://www.hsunny.cn/pages/viewpage.action?pageId=173834273\">系统模块总览</a>，需求及候选优化见<a href=\"https://www.hsunny.cn/pages/viewpage.action?pageId=173834408\">系统需求说明书</a>。本报告不修改源码、不改写历史验证记录、不主动恢复已暂停任务。</p>",
+      "representation": "storage",
+      "_expandable": {
+        "content": "/rest/api/content/173834293"
+      }
+    },
+    "_expandable": {
+      "editor": "",
+      "view": "",
+      "export_view": "",
+      "styled_view": "",
+      "anonymous_export_view": ""
+    }
+  },
+  "extensions": {
+    "position": "none"
+  },
+  "_links": {
+    "webui": "/pages/viewpage.action?pageId=173834293",
+    "edit": "/pages/resumedraft.action?draftId=173834293",
+    "tinyui": "/x/NYBcCg",
+    "collection": "/rest/api/content",
+    "base": "https://www.hsunny.cn",
+    "context": "",
+    "self": "https://www.hsunny.cn/rest/api/content/173834293"
+  },
+  "_expandable": {
+    "container": "/rest/api/space/ICT",
+    "metadata": "",
+    "operations": "",
+    "children": "/rest/api/content/173834293/child",
+    "restrictions": "/rest/api/content/173834293/restriction/byOperation",
+    "history": "/rest/api/content/173834293/history",
+    "descendants": "/rest/api/content/173834293/descendant",
+    "space": "/rest/api/space/ICT"
+  }
+}
